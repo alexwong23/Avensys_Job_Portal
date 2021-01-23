@@ -30,7 +30,6 @@ public class BillServlet extends HttpServlet {
         if(cafe == null) {
             cafe = new Cafe();
             customer = new Customer("Alex", "alex@gmail.com");
-            cafe.addCustomer(customer);
 
             // save it to the application scope
             servletContext.setAttribute( "cafe", cafe );
@@ -40,7 +39,7 @@ public class BillServlet extends HttpServlet {
         }
 
         // open order page
-        req.setAttribute("bill", cafe.getCustomerBill(customer));
+        req.setAttribute("bill", cafe.getUnpaidCustomerBill(customer));
         RequestDispatcher view = req.getRequestDispatcher("WEB-INF/view/bill.jsp");
         view.forward(req, resp);
     }
@@ -52,15 +51,26 @@ public class BillServlet extends HttpServlet {
         Cafe cafe = (Cafe) servletContext.getAttribute( "cafe" );
         Customer customer = (Customer) servletContext.getAttribute( "customer" );
 
-        Bill bill = cafe.getCustomerBill(customer);
+        // todo: throw error if unable to pay
+        cafe.payBill(customer);
+
+        // update bill variable
+        req.setAttribute("bill", cafe.getUnpaidCustomerBill(customer));
+
+        resp.sendRedirect("history");
+    }
+
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+        ServletContext servletContext = getServletContext();
+        Cafe cafe = (Cafe) servletContext.getAttribute( "cafe" );
+        Customer customer = (Customer) servletContext.getAttribute( "customer" );
 
         String itemName = req.getParameter("Item");
 
-        if(cafe.validGood(itemName)) {
-            cafe.delete(customer, itemName);
-        }
-
-        // todo: throw invalid food string
+        // todo: throw invalid parameters
+        cafe.delete(customer, itemName);
 
         resp.sendRedirect("bill");
     }

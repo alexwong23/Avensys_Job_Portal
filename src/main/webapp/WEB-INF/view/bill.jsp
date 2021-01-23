@@ -26,7 +26,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                    <form method="post" action="bill">
+                    <form method="delete" action="bill">
                         <input type="hidden" id="hiddenItem" name="Item" value="">
                         <%
                             Bill bill = (Bill) request.getAttribute("bill");
@@ -35,11 +35,11 @@
                             for(Map.Entry<Item, Integer> entry: billHashMap.entrySet()) {
                                 out.println("<tr>");
                                 out.println("<th scope=\"row\">" + counter + "</th>");
-                                out.println("<td>" + entry.getKey().getName() + "</th>");
-                                out.println("<td>$" + entry.getKey().getPrice() + "</th>");
-                                out.println("<td>" + entry.getValue() + "</th>");
-                                out.println("<td>$" + entry.getKey().getPrice() * entry.getValue() + "</th>");
-                                out.println("<td><button type=\"submit\" id=\"deleteItem\" class=\"btn btn-danger\"value=" + entry.getKey().getName() + ">Delete</button></th>");
+                                out.println("<td>" + entry.getKey().getName() + "</td>");
+                                out.println("<td>$" + entry.getKey().getPrice() + "</td>");
+                                out.println("<td>" + entry.getValue() + "</td>");
+                                out.println("<td>$" + entry.getKey().getPrice() * entry.getValue() + "</td>");
+                                out.println("<td><button type=\"submit\" id=\"deleteItem\" class=\"btn btn-danger\"value=" + entry.getKey().getName() + ">Delete</button></td>");
                                 out.println("</tr>");
                                 counter++;
                             }
@@ -59,7 +59,11 @@
               </table>
 
               <br>
-              <a class="btn btn-primary" href="/cafe/food" role="button">Buy more food</a>
+              <a class="btn btn-secondary" href="/cafe/food" role="button">Buy more food</a>
+              &nbsp;
+              <form method="post" action="bill">
+                 <button type="submit" class="btn btn-success">Pay Bill</button>
+              </form>
             </div>
         </div>
         <br>

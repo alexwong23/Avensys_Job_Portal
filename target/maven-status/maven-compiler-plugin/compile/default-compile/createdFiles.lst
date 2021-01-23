@@ -4,4 +4,5 @@ com/cafe/Customer.class
 com/cafe/Bill.class
 com/cafe/Cafe.class
 com/cafe/FoodServlet.class
+com/cafe/HistoryServlet.class
 com/cafe/BillServlet.class

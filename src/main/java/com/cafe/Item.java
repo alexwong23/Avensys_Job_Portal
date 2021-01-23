@@ -17,8 +17,12 @@ public class Item {
         return this.price;
     }
 
-    public String toString() {
-        return this.name + ": " + this.price;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
     }
 }
 

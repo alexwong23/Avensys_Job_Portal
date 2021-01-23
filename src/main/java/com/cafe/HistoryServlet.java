@@ -11,15 +11,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @WebServlet(
-        name = "foodservlet",
-        urlPatterns = "/food"
+        name = "historyservlet",
+        urlPatterns = "/history"
 )
-public class FoodServlet extends HttpServlet {
+public class HistoryServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -41,25 +39,8 @@ public class FoodServlet extends HttpServlet {
         }
 
         // open order page
-        req.setAttribute("goods", cafe.getItems());
-        RequestDispatcher view = req.getRequestDispatcher("WEB-INF/view/food.jsp");
+        req.setAttribute("allBills", cafe.getAllCustomerBills(customer));
+        RequestDispatcher view = req.getRequestDispatcher("WEB-INF/view/history.jsp");
         view.forward(req, resp);
-    }
-
-
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
-        ServletContext servletContext = getServletContext();
-        Cafe cafe = (Cafe) servletContext.getAttribute( "cafe" );
-        Customer customer = (Customer) servletContext.getAttribute( "customer" );
-
-        String itemName = req.getParameter("Item");
-        int itemQuantity = Integer.parseInt(req.getParameter("Quantity"));
-
-        // todo: throw invalid parameters
-        cafe.transaction(customer, itemName, itemQuantity);
-
-        resp.sendRedirect("bill");
     }
 }
