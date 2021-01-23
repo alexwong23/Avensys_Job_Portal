@@ -1,6 +1,6 @@
 # Avensys Web Application
 
-As part of my training at **[Avensys](https://aven-sys.com/)**, I created a Maven Project in IntelliJ CE using Tomcat, JSP, and Servlets.
+As part of my **[training at Avensys](https://github.com/alexwong23/Avensys_Training)**, I created a Maven Project in IntelliJ CE using Tomcat, JSP, and Servlets.
 
 ## How to get started
 
