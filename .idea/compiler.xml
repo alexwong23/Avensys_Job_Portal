@@ -8,6 +8,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="Cafe" />
         <module name="WebApp" />
+        <module name="JobPortal" />
       </profile>
     </annotationProcessing>
   </component>
