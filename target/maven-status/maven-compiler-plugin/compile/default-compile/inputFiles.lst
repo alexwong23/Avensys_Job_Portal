@@ -1,8 +1,8 @@
-/Users/alex/IdeaProjects/HotelCafe/src/main/java/com/cafe/Cafe.java
-/Users/alex/IdeaProjects/HotelCafe/src/main/java/com/cafe/BillServlet.java
-/Users/alex/IdeaProjects/HotelCafe/src/main/java/com/cafe/model/FoodType.java
-/Users/alex/IdeaProjects/HotelCafe/src/main/java/com/cafe/Bill.java
-/Users/alex/IdeaProjects/HotelCafe/src/main/java/com/cafe/FoodServlet.java
-/Users/alex/IdeaProjects/HotelCafe/src/main/java/com/cafe/HistoryServlet.java
-/Users/alex/IdeaProjects/HotelCafe/src/main/java/com/cafe/Item.java
-/Users/alex/IdeaProjects/HotelCafe/src/main/java/com/cafe/Customer.java
+/Users/alex/IdeaProjects/JobPortal/src/main/java/com/cafe/Customer.java
+/Users/alex/IdeaProjects/JobPortal/src/main/java/com/cafe/BillServlet.java
+/Users/alex/IdeaProjects/JobPortal/src/main/java/com/cafe/Bill.java
+/Users/alex/IdeaProjects/JobPortal/src/main/java/com/cafe/HistoryServlet.java
+/Users/alex/IdeaProjects/JobPortal/src/main/java/com/cafe/model/FoodType.java
+/Users/alex/IdeaProjects/JobPortal/src/main/java/com/cafe/FoodServlet.java
+/Users/alex/IdeaProjects/JobPortal/src/main/java/com/cafe/Cafe.java
+/Users/alex/IdeaProjects/JobPortal/src/main/java/com/cafe/Item.java
