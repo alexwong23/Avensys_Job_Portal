@@ -1,4 +1,4 @@
-package com.cafe;
+package com.cafe.model;
 
 public class Item {
     private String name;
@@ -23,6 +23,10 @@ public class Item {
 
     public void setPrice(double price) {
         this.price = price;
+    }
+
+    public String toString() {
+        return this.name + " " + this.price;
     }
 }
 

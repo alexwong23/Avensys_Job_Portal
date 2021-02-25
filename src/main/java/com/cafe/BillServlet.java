@@ -1,5 +1,7 @@
 package com.cafe;
 
+import com.cafe.model.Cafe;
+import com.cafe.model.Customer;
 import com.cafe.model.FoodType;
 
 import javax.servlet.RequestDispatcher;

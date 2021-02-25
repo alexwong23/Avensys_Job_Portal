@@ -1,12 +1,16 @@
 <%@ page import ="java.util.*" %>
-<%@ page import ="com.cafe.Item" %>
-<%@ page import ="com.cafe.Bill" %>
+<%@ page import ="com.cafe.model.Item" %>
+<%@ page import ="com.cafe.model.Bill" %>
+<%@ page import ="com.cafe.model.Account" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tag"%>
 <!DOCTYPE html>
 <html>
     <tag:header/>
     <body>
-        <tag:navbar/>
+        <% Account currentAccount = (Account) session.getAttribute("currentAccount"); %>
+        <tag:navbar userSession="<%= currentAccount %>">
+        </tag:navbar>
+
         <div class="jumbotron">
             <h1>My Bill</h1>
             <p>We accept the following payment methods: VISA/Mastercard/Cryptocurrencies/Cash.</p>

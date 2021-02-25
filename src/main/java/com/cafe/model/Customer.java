@@ -1,4 +1,4 @@
-package com.cafe;
+package com.cafe.model;
 
 public class Customer {
     private String name;

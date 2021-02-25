@@ -1,4 +1,4 @@
-package com.cafe;
+package com.cafe.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;

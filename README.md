@@ -18,6 +18,9 @@ As part of my **[training at Avensys](https://github.com/alexwong23/Avensys_Trai
 ## Application Stack
 
 1. IntelliJ CE IDE
+
+[Eclipse](https://o7planning.org/10133/run-maven-java-web-application-in-tomcat-maven-plugin)
+	
 2. Maven
 3. Tomcat plugin
 4. JSP

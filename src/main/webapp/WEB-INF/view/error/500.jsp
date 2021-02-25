@@ -8,7 +8,7 @@
             <h1>500 Server Error</h1>
             <p>Oops, something went wrong.</p>
             <p>Try to refresh this page or return to the home page.</p>
-            <a class="btn btn-primary" href="/cafe" role="button">Return to Homepage</a>
+            <a class="btn btn-primary" href="/jobportal" role="button">Return to Homepage</a>
         </div>
 
         <tag:footer/>

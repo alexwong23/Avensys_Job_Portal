@@ -1,6 +1,10 @@
 package com.cafe;
 
+import com.cafe.model.Cafe;
+import com.cafe.model.Customer;
 import com.cafe.model.FoodType;
+import com.cafe.model.Item;
+import com.cafe.service.FoodService;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
@@ -11,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +30,20 @@ public class FoodServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         ServletContext servletContext = getServletContext();
+
+        // create new cafe object if not found
+        FoodService foodService = (FoodService) servletContext.getAttribute( "foodService" );
+        if(foodService == null) {
+            try {
+                foodService = new FoodService();
+                // save it to the application scope
+                servletContext.setAttribute( "foodService", foodService );
+            } catch (SQLException sqe) {
+                sqe.printStackTrace();
+            } catch(Exception e) {
+                e.printStackTrace();
+            }
+        }
 
         // create new cafe object if not found
         Cafe cafe = (Cafe) servletContext.getAttribute( "cafe" );
@@ -51,11 +70,24 @@ public class FoodServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         ServletContext servletContext = getServletContext();
+
         Cafe cafe = (Cafe) servletContext.getAttribute( "cafe" );
+
+        FoodService foodService = (FoodService) servletContext.getAttribute( "foodService" );
+
         Customer customer = (Customer) servletContext.getAttribute( "customer" );
 
         String itemName = req.getParameter("Item");
         int itemQuantity = Integer.parseInt(req.getParameter("Quantity"));
+
+        try {
+            foodService.insertOneRecord(new Item(itemName, (double) itemQuantity));
+            for(Item i: foodService.getAllRecords()) {
+                log(i.toString());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
         // todo: throw invalid parameters
         cafe.transaction(customer, itemName, itemQuantity);
