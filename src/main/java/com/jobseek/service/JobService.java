@@ -13,35 +13,21 @@ import com.jobseek.model.Job;
 
 public class JobService {
 
-    private final String username = "root";
-    private final String password = "password";
-    Connection con = null;
+    private Connection con;
     PreparedStatement pst;
     Statement stmt;
     ResultSet rs;
     String sql = null;
 
-    public JobService() throws SQLException, ClassNotFoundException {
-        Class.forName("com.mysql.cj.jdbc.Driver");
-        System.out.println("Driver loaded successfully");
-        this.con = DriverManager.getConnection("jdbc:mysql://localhost/AVENSYS", username, password);
-        System.out.println("Connection to DB is established");
-        con.setAutoCommit(false);        	// to allow for batch transactions
-    }
-
-    public void closeResources() throws SQLException {
-        this.rs.close();
-        this.pst.close();
-        this.stmt.close();
-        this.con.close();
+    public JobService(Connection con) throws SQLException, ClassNotFoundException {
+        this.con = con;
+        System.out.println("Job Service online and ready to go!");
     }
 
     public void createTable() throws SQLException {
         this.batchStatements(new String[] {
                 "CREATE DATABASE IF NOT EXISTS AVENSYS",
                 "USE AVENSYS",
-                "DROP TABLE IF EXISTS APPLICATIONS",  // cause of dependency
-                "DROP TABLE IF EXISTS JOBS",
                 "CREATE TABLE IF NOT EXISTS JOBS " +
                         "(id INTEGER NOT NULL AUTO_INCREMENT, " +
                         " managerID INTEGER, " +
@@ -53,7 +39,15 @@ public class JobService {
         });
     }
 
-    public void populateTable() throws SQLException {
+    public void dropTable() throws SQLException {
+        this.batchStatements(new String[] {
+                "CREATE DATABASE IF NOT EXISTS AVENSYS",
+                "USE AVENSYS",
+                "DROP TABLE IF EXISTS JOBS"
+        });
+    }
+
+    public void populateMockData() throws SQLException {
         this.batchStatements(new String[] {
                 "INSERT INTO JOBS( managerID, title, salary, isAvailable ) VALUES"
                         + "(1, 'banker', 4500.00, true )",
@@ -98,13 +92,23 @@ public class JobService {
     }
 
     // list user's jobs
-    public ArrayList<Job> getRecordsByManagerID(Account account) throws SQLException {
+    public ArrayList<Job> getRecordsByAccount(Account account) throws SQLException {
+        if(account.getType().equals("seeker")) {
+            // show jobs applied by seeker
+            this.sql = "SELECT * FROM JOBS " +
+                    " INNER JOIN MANAGERS ON JOBS.managerID = MANAGERS.id " +
+                    " INNER JOIN APPLICATIONS ON JOBS.id = APPLICATIONS.jobID " +
+                    " INNER JOIN SEEKERS ON SEEKERS.id = APPLICATIONS.seekerID " +
+                    " WHERE APPLICATIONS.seekerID = ?";
+        } else if(account.getType().equals("manager")) {
+            // show jobs posted by manager
+            this.sql = "SELECT * FROM JOBS " +
+                    " INNER JOIN MANAGERS ON JOBS.managerID = MANAGERS.id " +
+                    " WHERE MANAGERS.id = ?";
+        }
         ArrayList<Job> jobs = new ArrayList<>();
-        this.sql = "SELECT * FROM JOBS " +
-                " INNER JOIN MANAGERS ON JOBS.managerID = MANAGERS.id " +
-                " WHERE MANAGERS.managerID = ?";
         this.pst = con.prepareStatement(sql);
-        this.pst.setString(1, account.getUsername());
+        this.pst.setInt(1, account.getAccountID());
         this.rs = pst.executeQuery();
         this.con.commit();						// save changes
         this.con.rollback();     				// If There Is Error

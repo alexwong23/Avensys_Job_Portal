@@ -3,6 +3,7 @@ package com.jobseek;
 import com.jobseek.model.*;
 import com.jobseek.service.ApplicationService;
 import com.jobseek.service.JobService;
+import com.jobseek.service.RootService;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
@@ -34,25 +35,6 @@ public class ApplyJobServlet extends HttpServlet {
             return;                                     // required so it does not execute rest of code
         }
 
-        /* TODO: do not delete and create new account table
-            if connection to account table not established
-            delete and create new account table
-            populate account table with fake data
-         */
-        ApplicationService applicationService = (ApplicationService) servletContext.getAttribute( "applicationService" );
-        if(applicationService == null) {
-            try {
-                applicationService = new ApplicationService();
-                applicationService.createTable();
-                // save it to the application scope
-                servletContext.setAttribute( "applicationService", applicationService);
-            } catch (SQLException sqe) {
-                sqe.printStackTrace();
-            } catch(Exception e) {
-                e.printStackTrace();
-            }
-        }
-
         // job seeker applies for a job
         String idString = req.getParameter("jobID");
         log("job ID parameter is " + idString);
@@ -67,10 +49,11 @@ public class ApplyJobServlet extends HttpServlet {
             return;
         }
 
+        ApplicationService applicationService = (ApplicationService) servletContext.getAttribute( "applicationService" );
         try {
             if(applicationService.insertOneRecord(currentAccount, jobID)) {
                 // redirect to home page with information
-                resp.sendRedirect("");
+                resp.sendRedirect("./history");
                 return;
             } else {
                 // display error at register page

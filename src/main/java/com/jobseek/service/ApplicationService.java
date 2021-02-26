@@ -13,34 +13,21 @@ import com.jobseek.model.Job;
 
 public class ApplicationService {
 
-    private final String username = "root";
-    private final String password = "password";
-    Connection con = null;
+    private Connection con;
     PreparedStatement pst;
     Statement stmt;
     ResultSet rs;
     String sql = null;
 
-    public ApplicationService() throws SQLException, ClassNotFoundException {
-        Class.forName("com.mysql.cj.jdbc.Driver");
-        System.out.println("Driver loaded successfully");
-        this.con = DriverManager.getConnection("jdbc:mysql://localhost/AVENSYS", username, password);
-        System.out.println("Connection to DB is established");
-        con.setAutoCommit(false);        	// to allow for batch transactions
-    }
-
-    public void closeResources() throws SQLException {
-        this.rs.close();
-        this.pst.close();
-        this.stmt.close();
-        this.con.close();
+    public ApplicationService(Connection con) throws SQLException, ClassNotFoundException {
+        this.con = con;
+        System.out.println("Application Service online and ready to go!");
     }
 
     public void createTable() throws SQLException {
         this.batchStatements(new String[] {
                 "CREATE DATABASE IF NOT EXISTS AVENSYS",
                 "USE AVENSYS",
-                "DROP TABLE IF EXISTS APPLICATIONS",
                 "CREATE TABLE APPLICATIONS " +
                         "(id INTEGER NOT NULL AUTO_INCREMENT, " +
                         " seekerID INTEGER, " +
@@ -48,6 +35,14 @@ public class ApplicationService {
                         " PRIMARY KEY ( id )," +
                         " FOREIGN KEY ( seekerID ) REFERENCES SEEKERS(id)," +
                         " FOREIGN KEY ( jobID ) REFERENCES JOBS(id)) "
+        });
+    }
+
+    public void dropTable() throws SQLException {
+        this.batchStatements(new String[] {
+                "CREATE DATABASE IF NOT EXISTS AVENSYS",
+                "USE AVENSYS",
+                "DROP TABLE IF EXISTS APPLICATIONS"
         });
     }
 

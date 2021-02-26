@@ -3,6 +3,7 @@ package com.jobseek;
 import com.jobseek.model.*;
 import com.jobseek.service.ApplicationService;
 import com.jobseek.service.JobService;
+import com.jobseek.service.RootService;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
@@ -26,25 +27,33 @@ public class JobServlet extends HttpServlet {
 
         ServletContext servletContext = getServletContext();
 
-        /* TODO: do not delete and create new account table
-            if connection to account table not established
-            delete and create new account table
-            populate account table with fake data
+        /* TODO: do not delete
+            if no connection to mysql tables
+                delete and create all tables
+                populate tables with mock data
+                set attributes for each table
          */
-        JobService jobService = (JobService) servletContext.getAttribute( "jobService" );
-        try {
-            if(jobService == null) {
-                jobService = new JobService();
-                jobService.createTable();
-                jobService.populateTable();
+        RootService rootService = (RootService) servletContext.getAttribute( "rootService" );
+        if(rootService == null) {
+            try {
+                rootService = new RootService();
+                rootService.dropTables();
+                rootService.createTables();
+                rootService.populateMockData();
                 // save it to the application scope
-                servletContext.setAttribute("jobService", jobService);
+                servletContext.setAttribute( "rootService", rootService);
+                servletContext.setAttribute( "seekerService", rootService.getSeekerService());
+                servletContext.setAttribute( "managerService", rootService.getManagerService());
+                servletContext.setAttribute( "jobService", rootService.getJobService());
+                servletContext.setAttribute( "applicationService", rootService.getApplicationService());
+            } catch (SQLException sqe) {
+                sqe.printStackTrace();
+            } catch(Exception e) {
+                e.printStackTrace();
             }
-        } catch (SQLException sqe) {
-            sqe.printStackTrace();
-        } catch(Exception e) {
-            e.printStackTrace();
         }
+
+        JobService jobService = rootService.getJobService();
 
         try {
             // show only available jobs

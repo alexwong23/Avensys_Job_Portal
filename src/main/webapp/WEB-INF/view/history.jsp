@@ -11,8 +11,8 @@
         </tag:navbar>
 
         <div class="jumbotron">
-            <h1>Job Market</h1>
-            <p>All available jobs are listed below.</p>
+            <h1>My Jobs</h1>
+            <p>My jobs are listed below.</p>
         </div>
 
         <div class="container">
@@ -20,29 +20,34 @@
               <table class="table">
                 <thead class="thead-light">
                   <tr>
-                    <th scope="col">#</th>
+                    <th scope="col">Job ID</th>
                     <th scope="col">Company</th>
+                    <th scope="col">Industry</th>
                     <th scope="col">Title</th>
                     <th scope="col">Salary($)</th>
                     <th scope="col"></th>
                   </tr>
                 </thead>
                 <tbody>
-                    <form method="post" action="seekerjobs" id="jobForm">
+                    <form method="post" action="" id="jobForm">
                     <input type="hidden" id="hiddenJobID" name="jobID" value="">
                     <% List<Job> availableJobs = (List<Job>) request.getAttribute("jobs"); %>
                     <% for(Job j: availableJobs) { %>
                         <tr>
-                        <th scope="row"><%= j.getID() %></th>
+                        <th scope="row"><%= j.getJobID() %></th>
                         <td><%= j.getCompany() %></td>
+                        <td><%= j.getIndustry() %></td>
                         <td><%= j.getTitle() %></td>
                         <td>$<%= j.getSalary() %></td>
                         <% if(currentAccount.getType().equals("seeker")) { %>
-                            <td><button type="submit" id="applyJob" class="btn btn-primary" value=<%= j.getID() %> >Apply</button></td>
+                            <td><button type="submit" id="seekerRemoveJob" class="btn btn-danger" value=<%= j.getJobID() %> >Remove</button></td>
                         <% } else if (currentAccount.getType().equals("manager")) { %>
-                            <td><button type="submit" id="removeJob" class="btn btn-danger" value=<%= j.getID() %> >Remove</button></td>
-                        <% } else { %>
-                            <td><p>No action allowed</p></td>
+                            <td>
+                                <button id="managerViewApplications" class="btn btn-secondary" onclick="location.href='/jobseek/jobs/<%= j.getJobID() %>'" type="button">
+                                    Applications
+                                </button>
+                                <button type="submit" id="managerRemoveJob" class="btn btn-danger" value=<%= j.getJobID() %>>Remove</button>
+                            </td>
                         <% } %>
                         </tr>
                     <% } %>

@@ -1,7 +1,9 @@
 package com.jobseek;
 
 import com.jobseek.model.*;
+import com.jobseek.service.JobService;
 import com.jobseek.service.ManagerService;
+import com.jobseek.service.RootService;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
@@ -33,19 +35,25 @@ public class ManagerLoginServlet extends HttpServlet {
             return;                                     // required so it does not execute rest of code
         }
 
-        /* TODO: do not delete and create new account table
-            if connection to account table not established
-            delete and create new account table
-            populate account table with fake data
+        /* TODO: do not delete
+            if no connection to mysql tables
+                delete and create all tables
+                populate tables with mock data
+                set attributes for each table
          */
-        ManagerService managerService = (ManagerService) servletContext.getAttribute( "managerService" );
-        if(managerService == null) {
+        RootService rootService = (RootService) servletContext.getAttribute( "rootService" );
+        if(rootService == null) {
             try {
-                managerService = new ManagerService();
-                managerService.createTable();
-                managerService.populateTable();
+                rootService = new RootService();
+                rootService.dropTables();
+                rootService.createTables();
+                rootService.populateMockData();
                 // save it to the application scope
-                servletContext.setAttribute( "managerService", managerService);
+                servletContext.setAttribute( "rootService", rootService);
+                servletContext.setAttribute( "seekerService", rootService.getSeekerService());
+                servletContext.setAttribute( "managerService", rootService.getManagerService());
+                servletContext.setAttribute( "jobService", rootService.getJobService());
+                servletContext.setAttribute( "applicationService", rootService.getApplicationService());
             } catch (SQLException sqe) {
                 sqe.printStackTrace();
             } catch(Exception e) {

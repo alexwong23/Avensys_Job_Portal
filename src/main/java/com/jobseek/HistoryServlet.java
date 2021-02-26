@@ -3,6 +3,7 @@ package com.jobseek;
 import com.jobseek.model.*;
 import com.jobseek.service.ApplicationService;
 import com.jobseek.service.JobService;
+import com.jobseek.service.RootService;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
@@ -30,40 +31,47 @@ public class HistoryServlet extends HttpServlet {
         HttpSession session = req.getSession(true);
         Account currentAccount = (Account) session.getAttribute( "currentAccount" );
         if(currentAccount == null) {
-            resp.sendRedirect("./login");
+            resp.sendRedirect("./seekerlogin");
             return;                                     // required so it does not execute rest of code
         }
 
-        /* TODO: do not delete and create new account table
-            if connection to account table not established
-            delete and create new account table
-            populate account table with fake data
+        /* TODO: do not delete
+            if no connection to mysql tables
+                delete and create all tables
+                populate tables with mock data
+                set attributes for each table
          */
-        JobService jobService = (JobService) servletContext.getAttribute( "jobService" );
-        try {
-            if(jobService == null) {
-                jobService = new JobService();
-                jobService.createTable();
-                jobService.populateTable();
+        RootService rootService = (RootService) servletContext.getAttribute( "rootService" );
+        if(rootService == null) {
+            try {
+                rootService = new RootService();
+                rootService.dropTables();
+                rootService.createTables();
+                rootService.populateMockData();
                 // save it to the application scope
-                servletContext.setAttribute("jobService", jobService);
+                servletContext.setAttribute( "rootService", rootService);
+                servletContext.setAttribute( "seekerService", rootService.getSeekerService());
+                servletContext.setAttribute( "managerService", rootService.getManagerService());
+                servletContext.setAttribute( "jobService", rootService.getJobService());
+                servletContext.setAttribute( "applicationService", rootService.getApplicationService());
+            } catch (SQLException sqe) {
+                sqe.printStackTrace();
+            } catch(Exception e) {
+                e.printStackTrace();
             }
-        } catch (SQLException sqe) {
-            sqe.printStackTrace();
-        } catch(Exception e) {
-            e.printStackTrace();
         }
 
+        JobService jobService = rootService.getJobService();
         try {
-            // show my jobs
-            req.setAttribute("jobs", jobService.getRecordsByManagerID(currentAccount));
+            // show seeker or manager jobs
+            req.setAttribute("jobs", jobService.getRecordsByAccount(currentAccount));
         } catch (SQLException sqe) {
             sqe.printStackTrace();
         } catch(Exception e) {
             e.printStackTrace();
         }
 
-        RequestDispatcher view = req.getRequestDispatcher("WEB-INF/view/jobs.jsp");
+        RequestDispatcher view = req.getRequestDispatcher("WEB-INF/view/history.jsp");
         view.forward(req, resp);
         return;
     }

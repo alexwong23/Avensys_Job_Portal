@@ -8,6 +8,7 @@ com/jobseek/HistoryServlet.class
 com/jobseek/SeekerLoginServlet.class
 com/jobseek/service/JobService.class
 com/jobseek/model/Account.class
+com/jobseek/service/RootService.class
 com/jobseek/SeekerRegisterServlet.class
 com/jobseek/ApplyJobServlet.class
 com/jobseek/ManagerRegisterServlet.class
