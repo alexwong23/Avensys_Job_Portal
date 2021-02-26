@@ -39,9 +39,8 @@ public class ManagerService {
         this.batchStatements(new String[] {
                 "CREATE DATABASE IF NOT EXISTS AVENSYS",
                 "USE AVENSYS",
-                "DROP TABLE IF EXISTS JOBS",  // cause of dependency
                 "DROP TABLE IF EXISTS MANAGERS",
-                "CREATE TABLE MANAGERS " +
+                "CREATE TABLE IF NOT EXISTS MANAGERS " +
                         "(id INTEGER NOT NULL AUTO_INCREMENT, " +
                         " username VARCHAR(255), " +
                         " password VARCHAR(255), " +

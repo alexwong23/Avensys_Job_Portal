@@ -29,8 +29,8 @@ public class ApplyJobServlet extends HttpServlet {
         // redirect to login page if user is NOT logged in as a job seeker
         HttpSession session = req.getSession(true);
         Account currentAccount = (Account) session.getAttribute( "currentAccount" );
-        if(currentAccount == null || !currentAccount.getType().equals("manager")) {
-            resp.sendRedirect("./login");
+        if(currentAccount == null || !currentAccount.getType().equals("seeker")) {
+            resp.sendRedirect("./seekerlogin");
             return;                                     // required so it does not execute rest of code
         }
 

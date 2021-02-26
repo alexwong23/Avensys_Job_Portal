@@ -2,7 +2,7 @@ package com.jobseek.model;
 
 public class Account {
 
-    private int id;
+    private int accountID;
     private String username;
     private String password;
     private String type;
@@ -20,8 +20,8 @@ public class Account {
     }
 
     // used when retrieving records for comparison
-    public Account(int id, String username, String type) {
-        this.id = id;
+    public Account(int accountID, String username, String type) {
+        this.accountID = accountID;
         this.username = username;
         this.type = type;
     }
@@ -34,8 +34,8 @@ public class Account {
         this.type = type;
     }
 
-    public int getID() {
-        return this.id;
+    public int getAccountID() {
+        return this.accountID;
     }
     public String getUsername() {
         return this.username;

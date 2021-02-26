@@ -64,7 +64,7 @@ public class ApplicationService {
     public boolean insertOneRecord(Account account, int jobID) throws SQLException {
         this.sql = "INSERT INTO APPLICATIONS( seekerID, jobID ) VALUES(?, ?)";
         this.pst = con.prepareStatement(sql);
-        this.pst.setInt(1, account.getID());
+        this.pst.setInt(1, account.getAccountID());
         this.pst.setInt(2, jobID);
         int recordInserted = this.pst.executeUpdate();
         this.con.commit();						// save changes

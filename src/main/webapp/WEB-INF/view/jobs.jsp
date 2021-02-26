@@ -20,8 +20,9 @@
               <table class="table">
                 <thead class="thead-light">
                   <tr>
-                    <th scope="col">#</th>
+                    <th scope="col">Job ID</th>
                     <th scope="col">Company</th>
+                    <th scope="col">Industry</th>
                     <th scope="col">Title</th>
                     <th scope="col">Salary($)</th>
                     <th scope="col"></th>
@@ -33,14 +34,15 @@
                     <% List<Job> availableJobs = (List<Job>) request.getAttribute("jobs"); %>
                     <% for(Job j: availableJobs) { %>
                         <tr>
-                        <th scope="row"><%= j.getID() %></th>
+                        <th scope="row"><%= j.getJobID() %></th>
                         <td><%= j.getCompany() %></td>
+                        <td><%= j.getIndustry() %></td>
                         <td><%= j.getTitle() %></td>
                         <td>$<%= j.getSalary() %></td>
                         <% if(currentAccount == null || !currentAccount.getType().equals("seeker")) { %>
-                            <td><p>No action allowed</p></td>
+                            <td></td>
                         <% } else { %>
-                            <td><button type="submit" id="applyJob" class="btn btn-primary" value=<%= j.getID() %> >Apply</button></td>
+                            <td><button type="submit" id="applyJob" class="btn btn-primary" value=<%= j.getJobID() %> >Apply</button></td>
                         <% } %>
                         </tr>
                     <% } %>

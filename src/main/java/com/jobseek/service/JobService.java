@@ -42,7 +42,7 @@ public class JobService {
                 "USE AVENSYS",
                 "DROP TABLE IF EXISTS APPLICATIONS",  // cause of dependency
                 "DROP TABLE IF EXISTS JOBS",
-                "CREATE TABLE JOBS " +
+                "CREATE TABLE IF NOT EXISTS JOBS " +
                         "(id INTEGER NOT NULL AUTO_INCREMENT, " +
                         " managerID INTEGER, " +
                         " title VARCHAR(255), " +
@@ -81,7 +81,7 @@ public class JobService {
     public boolean insertOneRecord(Account account, Job job) throws SQLException {
         this.sql = "INSERT INTO JOBS( managerID, title, salary, boolean ) VALUES(?, ?, ?, ?)";
         this.pst = con.prepareStatement(sql);
-        this.pst.setInt(1, account.getID());
+        this.pst.setInt(1, account.getAccountID());
         this.pst.setString(2, job.getTitle());
         this.pst.setDouble(3, job.getSalary());
         this.pst.setBoolean(4, job.getAvailable());
@@ -101,8 +101,8 @@ public class JobService {
     public ArrayList<Job> getRecordsByManagerID(Account account) throws SQLException {
         ArrayList<Job> jobs = new ArrayList<>();
         this.sql = "SELECT * FROM JOBS " +
-                " INNER JOIN MANAGER ON JOBS.id = MANAGER.managerID " +
-                " WHERE MANAGER.managerID = ?";
+                " INNER JOIN MANAGERS ON JOBS.managerID = MANAGERS.id " +
+                " WHERE MANAGERS.managerID = ?";
         this.pst = con.prepareStatement(sql);
         this.pst.setString(1, account.getUsername());
         this.rs = pst.executeQuery();
@@ -126,8 +126,8 @@ public class JobService {
     public ArrayList<Job> getRecordsByCompany(String company) throws SQLException {
         ArrayList<Job> jobs = new ArrayList<>();
         this.sql = "SELECT * FROM JOBS " +
-                " INNER JOIN MANAGER ON JOBS.id = MANAGER.managerID " +
-                " WHERE MANAGER.company = ?";
+                " INNER JOIN MANAGERS ON JOBS.managerID = MANAGERS.id " +
+                " WHERE MANAGERS.company = ?";
         this.pst = con.prepareStatement(sql);
         this.pst.setString(1, company);
         this.rs = pst.executeQuery();
@@ -151,7 +151,7 @@ public class JobService {
     public ArrayList<Job> getRecordsByAvailability(boolean isAvailable) throws SQLException {
         ArrayList<Job> jobs = new ArrayList<>();
         this.sql = "SELECT * FROM JOBS " +
-                " INNER JOIN MANAGER ON JOBS.id = MANAGER.managerID " +
+                " INNER JOIN MANAGERS ON JOBS.managerID = MANAGERS.id " +
                 " WHERE JOBS.isAvailable = ?";
         this.pst = con.prepareStatement(sql);
         this.pst.setBoolean(1, isAvailable);
@@ -160,7 +160,7 @@ public class JobService {
         this.con.rollback();     				// If There Is Error
         while(this.rs.next() == true) {
             jobs.add(new Job(
-                    this.rs.getInt("id"),
+                    this.rs.getInt("JOBS.id"),
                     this.rs.getString("username"),
                     this.rs.getString("company"),
                     this.rs.getString("industry"),
@@ -175,7 +175,7 @@ public class JobService {
     public ArrayList<Job> getAllRecords() throws SQLException {
         ArrayList<Job> jobs = new ArrayList<>();
         this.sql = "SELECT * FROM JOBS " +
-                " INNER JOIN MANAGER ON JOBS.id = MANAGER.managerID ";
+                " INNER JOIN MANAGERS ON JOBS.managerID = MANAGERS.id ";
         this.stmt = con.createStatement();
         this.rs = stmt.executeQuery(this.sql);
         this.con.commit();						// save changes
