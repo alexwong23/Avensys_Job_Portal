@@ -43,7 +43,7 @@
                             <td><button type="submit" id="seekerRemoveJob" class="btn btn-danger" value=<%= j.getJobID() %> >Remove</button></td>
                         <% } else if (currentAccount.getType().equals("manager")) { %>
                             <td>
-                                <button id="managerViewApplications" class="btn btn-secondary" onclick="location.href='/jobseek/jobs/<%= j.getJobID() %>'" type="button">
+                                <button id="managerViewApplications" class="btn btn-secondary" onclick="location.href='/jobseek/applications/<%= j.getJobID() %>'" type="button">
                                     Applications
                                 </button>
                                 <button type="submit" id="managerRemoveJob" class="btn btn-danger" value=<%= j.getJobID() %>>Remove</button>

@@ -1,7 +1,6 @@
 package com.jobseek;
 
 import com.jobseek.model.*;
-import com.jobseek.service.JobService;
 import com.jobseek.service.RootService;
 import com.jobseek.service.SeekerService;
 

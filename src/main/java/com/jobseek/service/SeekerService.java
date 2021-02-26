@@ -8,6 +8,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
+import com.jobseek.model.Account;
+import com.jobseek.model.Job;
 import com.jobseek.model.Seeker;
 
 public class SeekerService {
@@ -142,6 +144,32 @@ public class SeekerService {
         while(this.rs.next() == true) {
             seekers.add(new Seeker(
                     this.rs.getInt("id"),
+                    this.rs.getString("username"),
+                    this.rs.getString("educationLevel"),
+                    this.rs.getString("school"),
+                    this.rs.getInt("yearGraduated")
+            ));
+        }
+        return seekers;
+    }
+
+    // list manager's job applications
+    public ArrayList<Seeker> getRecordsByManagerAccountAndJobID(Account account, int jobID) throws SQLException {
+        this.sql = "SELECT * FROM SEEKERS " +
+                " INNER JOIN APPLICATIONS ON SEEKERS.id = APPLICATIONS.seekerID " +
+                " INNER JOIN JOBS ON JOBS.id = APPLICATIONS.jobID " +
+                " INNER JOIN MANAGERS ON JOBS.managerID = MANAGERS.id " +
+                " WHERE MANAGERS.id = ? AND JOBS.id = ?";
+        ArrayList<Seeker> seekers = new ArrayList<>();
+        this.pst = con.prepareStatement(sql);
+        this.pst.setInt(1, account.getAccountID());
+        this.pst.setInt(2, jobID);
+        this.rs = pst.executeQuery();
+        this.con.commit();						// save changes
+        this.con.rollback();     				// If There Is Error
+        while(this.rs.next() == true) {
+            seekers.add(new Seeker(
+                    this.rs.getInt("SEEKERS.id"),
                     this.rs.getString("username"),
                     this.rs.getString("educationLevel"),
                     this.rs.getString("school"),

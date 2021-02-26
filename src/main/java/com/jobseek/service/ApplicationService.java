@@ -46,6 +46,13 @@ public class ApplicationService {
         });
     }
 
+    public void populateMockData() throws SQLException {
+        this.batchStatements(new String[] {
+                "INSERT INTO APPLICATIONS( seekerID, jobID ) VALUES ( 1, 1 )",
+                "INSERT INTO APPLICATIONS( seekerID, jobID ) VALUES ( 2, 1 )"
+        });
+    }
+
     public void batchStatements(String[] sqlStatements) throws SQLException {
         this.stmt = con.createStatement();
         for(String s: sqlStatements) {
@@ -69,31 +76,5 @@ public class ApplicationService {
         } else {
             return true;
         }
-    }
-
-    // for seeker to retrieve their list of applied jobs
-    public ArrayList<Job> getRecordsBySeekerID(int seekerID) throws SQLException {
-        ArrayList<Job> jobs = new ArrayList<>();
-        this.sql = "SELECT * FROM JOBS " +
-                " INNER JOIN APPLICATIONS ON JOBS.id = APPLICATIONS.jobID " +
-                " INNER JOIN APPLICATIONS ON SEEKERS.id = APPLICATIONS.seekerID " +
-                " WHERE APPLICATIONS.seekerID = ?";
-        this.pst = con.prepareStatement(sql);
-        this.pst.setInt(1, seekerID);
-        this.rs = pst.executeQuery();
-        this.con.commit();						// save changes
-        this.con.rollback();     				// If There Is Error
-        while(this.rs.next() == true) {
-            jobs.add(new Job(
-                    this.rs.getInt("JOBS.id"),
-                    this.rs.getString("username"),
-                    this.rs.getString("company"),
-                    this.rs.getString("industry"),
-                    this.rs.getString("title"),
-                    this.rs.getDouble("salary"),
-                    this.rs.getBoolean("isAvailable")
-            ));
-        }
-        return jobs;
     }
 }

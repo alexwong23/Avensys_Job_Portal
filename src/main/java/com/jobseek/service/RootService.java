@@ -58,7 +58,7 @@ public class RootService {
         this.seekerService.populateMockData();
         this.managerService.populateMockData();
         this.jobService.populateMockData();
-//        this.applicationService.populateMockData();
+        this.applicationService.populateMockData();
     }
 
     public SeekerService getSeekerService() {

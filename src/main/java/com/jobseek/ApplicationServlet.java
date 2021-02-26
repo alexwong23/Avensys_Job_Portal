@@ -1,8 +1,10 @@
 package com.jobseek;
 
 import com.jobseek.model.*;
+import com.jobseek.service.ApplicationService;
 import com.jobseek.service.JobService;
 import com.jobseek.service.RootService;
+import com.jobseek.service.SeekerService;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
@@ -16,21 +18,21 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 @WebServlet(
-        name = "historyservlet",
-        urlPatterns = "/history"
+        name = "ApplicationServlet",
+        urlPatterns = "/applications/*"
 )
-public class HistoryServlet extends HttpServlet {
+public class ApplicationServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         ServletContext servletContext = getServletContext();
 
-        // redirect to login page if user is NOT logged
+        // redirect to login page if user is NOT logged in as a hiring manager
         HttpSession session = req.getSession(true);
         Account currentAccount = (Account) session.getAttribute( "currentAccount" );
-        if(currentAccount == null) {
-            resp.sendRedirect("./seekerlogin");
+        if(currentAccount == null || !currentAccount.getType().equals("manager")) {
+            resp.sendRedirect("../managerlogin");
             return;                                     // required so it does not execute rest of code
         }
 
@@ -60,17 +62,23 @@ public class HistoryServlet extends HttpServlet {
             }
         }
 
+        SeekerService seekerService = rootService.getSeekerService();
         JobService jobService = rootService.getJobService();
         try {
-            // show seeker or manager jobs
-            req.setAttribute("jobs", jobService.getRecordsByAccount(currentAccount));
+            String jobIDString = req.getPathInfo();
+            int jobID = Integer.parseInt(jobIDString.replace("/",""));
+            log(String.valueOf(jobID));
+            // show seekers who applied for this hiring manager's job
+            req.setAttribute("seekers", seekerService.getRecordsByManagerAccountAndJobID(currentAccount, jobID));
+            req.setAttribute("job", jobService.getOneRecordByID(jobID));
+            log(jobService.getOneRecordByID(jobID).getTitle());
         } catch (SQLException sqe) {
             sqe.printStackTrace();
         } catch(Exception e) {
             e.printStackTrace();
         }
 
-        RequestDispatcher view = req.getRequestDispatcher("WEB-INF/view/history.jsp");
+        RequestDispatcher view = req.getRequestDispatcher("/WEB-INF/view/applications.jsp");
         view.forward(req, resp);
         return;
     }

@@ -91,7 +91,31 @@ public class JobService {
         }
     }
 
-    // list user's jobs
+    public Job getOneRecordByID(int jobID) throws SQLException {
+        Job job = null;
+        this.sql = "SELECT * FROM JOBS " +
+                " INNER JOIN MANAGERS ON JOBS.managerID = MANAGERS.id " +
+                " WHERE JOBS.id = ?";
+        this.pst = con.prepareStatement(sql);
+        this.pst.setInt(1, jobID);
+        this.rs = pst.executeQuery();
+        this.con.commit();						// save changes
+        this.con.rollback();     				// If There Is Error
+        if(this.rs.next() != false) {
+            job = new Job(
+                this.rs.getInt("id"),
+                this.rs.getString("username"),
+                this.rs.getString("company"),
+                this.rs.getString("industry"),
+                this.rs.getString("title"),
+                this.rs.getDouble("salary"),
+                this.rs.getBoolean("isAvailable")
+            );
+        }
+        return job;
+    }
+
+    // list account's jobs
     public ArrayList<Job> getRecordsByAccount(Account account) throws SQLException {
         if(account.getType().equals("seeker")) {
             // show jobs applied by seeker
