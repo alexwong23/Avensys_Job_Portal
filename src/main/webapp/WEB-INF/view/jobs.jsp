@@ -11,7 +11,7 @@
         </tag:navbar>
 
         <div class="jumbotron">
-            <h1>Jobs</h1>
+            <h1>Job Market</h1>
             <p>All available jobs are listed below.</p>
         </div>
 
@@ -28,7 +28,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                    <form method="post" action="jobs">
+                    <form method="post" action="applyjob" id="jobForm">
                     <input type="hidden" id="hiddenJobID" name="jobID" value="">
                     <% List<Job> availableJobs = (List<Job>) request.getAttribute("jobs"); %>
                     <% for(Job j: availableJobs) { %>
@@ -37,7 +37,11 @@
                         <td><%= j.getCompany() %></td>
                         <td><%= j.getTitle() %></td>
                         <td>$<%= j.getSalary() %></td>
-                        <td><button type="submit" id="applyJob" class="btn btn-primary" value=<%= j.getID() %> >Apply</button></td>
+                        <% if(currentAccount == null || !currentAccount.getType().equals("seeker")) { %>
+                            <td><p>No action allowed</p></td>
+                        <% } else { %>
+                            <td><button type="submit" id="applyJob" class="btn btn-primary" value=<%= j.getID() %> >Apply</button></td>
+                        <% } %>
                         </tr>
                     <% } %>
                 </tbody>

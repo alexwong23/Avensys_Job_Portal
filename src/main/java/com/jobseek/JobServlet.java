@@ -26,14 +26,6 @@ public class JobServlet extends HttpServlet {
 
         ServletContext servletContext = getServletContext();
 
-        // redirect to login page if user is NOT logged in
-        HttpSession session = req.getSession(true);
-        Account currentAccount = (Account) session.getAttribute( "currentAccount" );
-        if(currentAccount == null) {
-            resp.sendRedirect("./login");
-            return;                                     // required so it does not execute rest of code
-        }
-
         /* TODO: do not delete and create new account table
             if connection to account table not established
             delete and create new account table
@@ -63,72 +55,9 @@ public class JobServlet extends HttpServlet {
             e.printStackTrace();
         }
 
-        RequestDispatcher view = req.getRequestDispatcher("WEB-INF/view/job.jsp");
+        RequestDispatcher view = req.getRequestDispatcher("WEB-INF/view/jobs.jsp");
         view.forward(req, resp);
         return;
     }
 
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
-        ServletContext servletContext = getServletContext();
-
-        /* TODO: do not delete and create new account table
-            if connection to account table not established
-            delete and create new account table
-            populate account table with fake data
-         */
-        ApplicationService applicationService = (ApplicationService) servletContext.getAttribute( "applicationService" );
-        if(applicationService == null) {
-            try {
-                applicationService = new ApplicationService();
-                applicationService.createTable();
-                // save it to the application scope
-                servletContext.setAttribute( "applicationService", applicationService);
-            } catch (SQLException sqe) {
-                sqe.printStackTrace();
-            } catch(Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-        // redirect to login page if user is NOT logged in as a job seeker
-        HttpSession session = req.getSession(true);
-        Account currentAccount = (Account) session.getAttribute( "currentAccount" );
-        if(currentAccount == null || !currentAccount.getType().equals("seeker")) {
-            resp.sendRedirect("./login");
-            return;                                     // required so it does not execute rest of code
-        }
-
-        // job seeker applies for a job
-
-        String idString = req.getParameter("jobID");
-        log("job ID parameter is " + idString);
-        int jobID = 2;
-        try {
-            jobID = Integer.parseInt(idString);
-        } catch (Exception e) {
-            e.printStackTrace();
-            req.setAttribute("applyJobError", "Apply Job Failed: ID not an integer");
-            RequestDispatcher view = req.getRequestDispatcher("WEB-INF/view/job.jsp");
-            view.forward(req, resp);
-            return;
-        }
-
-        try {
-            if(applicationService.insertOneRecord(currentAccount, jobID)) {
-                // redirect to home page with information
-                resp.sendRedirect("");
-                return;
-            } else {
-                // display error at register page
-                req.setAttribute("applyJobError", "Apply Job Failed: Job record not inserted");
-                RequestDispatcher view = req.getRequestDispatcher("WEB-INF/view/job.jsp");
-                view.forward(req, resp);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-    }
 }

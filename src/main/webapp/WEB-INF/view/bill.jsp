@@ -1,5 +1,4 @@
-<%@ page import ="java.util.*" %>
-<%@ page import ="com.jobseek.model.Bill" %>
+<%-- <%@ page import ="java.util.*" %>
 <%@ page import ="com.jobseek.model.Seeker" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tag"%>
 <!DOCTYPE html>
@@ -102,3 +101,4 @@
         <tag:script/>
     </body>
 </html>
+ --%>

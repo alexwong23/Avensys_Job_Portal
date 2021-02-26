@@ -24,8 +24,8 @@ public class LogoutServlet extends HttpServlet {
 
         // redirect to home page if user is logged in
         HttpSession session = req.getSession(true);
-        Seeker currentSeeker = (Seeker) session.getAttribute( "currentAccount" );
-        if(currentSeeker != null) {
+        Account currentAccount = (Account) session.getAttribute( "currentAccount" );
+        if(currentAccount != null) {
             session.setAttribute( "currentAccount", null);
             resp.sendRedirect("");
         } else {

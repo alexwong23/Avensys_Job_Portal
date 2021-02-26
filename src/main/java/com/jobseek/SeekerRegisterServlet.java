@@ -15,10 +15,10 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 @WebServlet(
-        name = "loginservlet",
-        urlPatterns = "/login"
+        name = "seekerregisterservlet",
+        urlPatterns = "/seekerregister"
 )
-public class LoginServlet extends HttpServlet {
+public class SeekerRegisterServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -53,7 +53,7 @@ public class LoginServlet extends HttpServlet {
             }
         }
 
-        RequestDispatcher view = req.getRequestDispatcher("WEB-INF/view/login.jsp");
+        RequestDispatcher view = req.getRequestDispatcher("WEB-INF/view/seekerregister.jsp");
         view.forward(req, resp);
     }
 
@@ -66,21 +66,45 @@ public class LoginServlet extends HttpServlet {
 
         String username = req.getParameter("username");
         String password = req.getParameter("password");
+        String confirm = req.getParameter("confirm");
+        String educationLevel = req.getParameter("educationLevel");
+        String school = req.getParameter("school");
+        String yearGraduatedString = req.getParameter("yearGraduated");
+        int yearGraduated = 0;
+        try {
+            yearGraduated = Integer.parseInt(yearGraduatedString);
+        } catch (Exception e) {
+            e.printStackTrace();
+            req.setAttribute("registerError", "Register Failed: Year not an integer");
+            RequestDispatcher view = req.getRequestDispatcher("WEB-INF/view/seekerregister.jsp");
+            view.forward(req, resp);
+            return;
+        }
+
+        Seeker newSeeker = new Seeker(username, password, educationLevel, school, yearGraduated);
+        if(!password.equals(confirm)) {
+            // password and confirm password has to be the same
+            req.setAttribute("registerError", "Register Failed: Passwords do not match");
+            RequestDispatcher view = req.getRequestDispatcher("WEB-INF/view/seekerregister.jsp");
+            view.forward(req, resp);
+            return;
+        }
 
         try {
-            Seeker loginSeeker = seekerService.getOneRecord(new Seeker(username, password));
-
-            // if login credentials correct
-            if(loginSeeker != null) {
+            if(seekerService.insertOneRecord(newSeeker)) {
+                // if registered account
+                // set current account
                 HttpSession session = req.getSession(true);
-                req.setAttribute("loginError", null);
-                session.setAttribute("currentAccount", (Account) loginSeeker);
+                req.setAttribute("registerError", null);
+                session.setAttribute("currentAccount", (Account) newSeeker);
+                log("currentAccount was added after login: " + newSeeker);
                 // redirect to home page with information
                 resp.sendRedirect("");
             } else {
-                // display error at login page
-                req.setAttribute("loginError", "Invalid username or password");
-                RequestDispatcher view = req.getRequestDispatcher("WEB-INF/view/login.jsp");
+                // display error at register page
+                req.setAttribute("registerError", "Register Failed: Username has been taken");
+                log("Register Failed: Username has been taken");
+                RequestDispatcher view = req.getRequestDispatcher("WEB-INF/view/seekerregister.jsp");
                 view.forward(req, resp);
             }
         } catch (SQLException e) {

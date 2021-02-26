@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
+import com.jobseek.model.Account;
 import com.jobseek.model.Job;
 
 public class JobService {
@@ -43,26 +44,27 @@ public class JobService {
                 "DROP TABLE IF EXISTS JOBS",
                 "CREATE TABLE JOBS " +
                         "(id INTEGER NOT NULL AUTO_INCREMENT, " +
-                        " company VARCHAR(255), " +
+                        " managerID INTEGER, " +
                         " title VARCHAR(255), " +
                         " salary DECIMAL, " +
                         " isAvailable BOOLEAN, " +
-                        " PRIMARY KEY ( id ))"
+                        " PRIMARY KEY ( id ), " +
+                        " FOREIGN KEY ( managerID ) REFERENCES MANAGERS(id)) "
         });
     }
 
     public void populateTable() throws SQLException {
         this.batchStatements(new String[] {
-                "INSERT INTO JOBS( company, title, salary, isAvailable ) VALUES"
-                        + "('companyA', 'banker', 4500.00, true )",
-                "INSERT INTO JOBS( company, title, salary, isAvailable ) VALUES"
-                        + "('companyB', 'salesman', 3300.00, false )",
-                "INSERT INTO JOBS( company, title, salary, isAvailable ) VALUES"
-                        + "('companyB', 'engineer', 4000.00, true )",
-                "INSERT INTO JOBS( company, title, salary, isAvailable ) VALUES"
-                        + "('companyA', 'project manager', 6250.00, true )",
-                "INSERT INTO JOBS( company, title, salary, isAvailable ) VALUES"
-                        + "('companyB', 'CEO', 25000.00, true )"
+                "INSERT INTO JOBS( managerID, title, salary, isAvailable ) VALUES"
+                        + "(1, 'banker', 4500.00, true )",
+                "INSERT INTO JOBS( managerID, title, salary, isAvailable ) VALUES"
+                        + "(1, 'salesman', 3300.00, false )",
+                "INSERT INTO JOBS( managerID, title, salary, isAvailable ) VALUES"
+                        + "(2, 'engineer', 4000.00, true )",
+                "INSERT INTO JOBS( managerID, title, salary, isAvailable ) VALUES"
+                        + "(3, 'project manager', 6250.00, true )",
+                "INSERT INTO JOBS( managerID, title, salary, isAvailable ) VALUES"
+                        + "(3, 'CEO', 25000.00, true )"
         });
     }
 
@@ -76,10 +78,10 @@ public class JobService {
         con.rollback();     				// If There Is Error
     }
 
-    public boolean insertOneRecord(Job job) throws SQLException {
-        this.sql = "INSERT INTO JOBS( company, title, salary, boolean ) VALUES(?, ?, ?, ?)";
+    public boolean insertOneRecord(Account account, Job job) throws SQLException {
+        this.sql = "INSERT INTO JOBS( managerID, title, salary, boolean ) VALUES(?, ?, ?, ?)";
         this.pst = con.prepareStatement(sql);
-        this.pst.setString(1, job.getCompany());
+        this.pst.setInt(1, account.getID());
         this.pst.setString(2, job.getTitle());
         this.pst.setDouble(3, job.getSalary());
         this.pst.setBoolean(4, job.getAvailable());
@@ -95,19 +97,48 @@ public class JobService {
         }
     }
 
-    // for company to retrieve their list of jobs
-    public ArrayList<Job> getRecordsByCompany(String company) throws SQLException {
+    // list user's jobs
+    public ArrayList<Job> getRecordsByManagerID(Account account) throws SQLException {
         ArrayList<Job> jobs = new ArrayList<>();
-        this.sql = "SELECT * FROM JOBS WHERE company = ?";
+        this.sql = "SELECT * FROM JOBS " +
+                " INNER JOIN MANAGER ON JOBS.id = MANAGER.managerID " +
+                " WHERE MANAGER.managerID = ?";
         this.pst = con.prepareStatement(sql);
-        this.pst.setString(1, username);
+        this.pst.setString(1, account.getUsername());
         this.rs = pst.executeQuery();
         this.con.commit();						// save changes
         this.con.rollback();     				// If There Is Error
         while(this.rs.next() == true) {
             jobs.add(new Job(
                     this.rs.getInt("id"),
+                    this.rs.getString("username"),
                     this.rs.getString("company"),
+                    this.rs.getString("industry"),
+                    this.rs.getString("title"),
+                    this.rs.getDouble("salary"),
+                    this.rs.getBoolean("isAvailable")
+            ));
+        }
+        return jobs;
+    }
+
+    // for company to retrieve their list of jobs
+    public ArrayList<Job> getRecordsByCompany(String company) throws SQLException {
+        ArrayList<Job> jobs = new ArrayList<>();
+        this.sql = "SELECT * FROM JOBS " +
+                " INNER JOIN MANAGER ON JOBS.id = MANAGER.managerID " +
+                " WHERE MANAGER.company = ?";
+        this.pst = con.prepareStatement(sql);
+        this.pst.setString(1, company);
+        this.rs = pst.executeQuery();
+        this.con.commit();						// save changes
+        this.con.rollback();     				// If There Is Error
+        while(this.rs.next() == true) {
+            jobs.add(new Job(
+                    this.rs.getInt("id"),
+                    this.rs.getString("username"),
+                    this.rs.getString("company"),
+                    this.rs.getString("industry"),
                     this.rs.getString("title"),
                     this.rs.getDouble("salary"),
                     this.rs.getBoolean("isAvailable")
@@ -119,7 +150,9 @@ public class JobService {
     // list available jobs to job seekers
     public ArrayList<Job> getRecordsByAvailability(boolean isAvailable) throws SQLException {
         ArrayList<Job> jobs = new ArrayList<>();
-        this.sql = "SELECT * FROM JOBS WHERE isAvailable = ?";
+        this.sql = "SELECT * FROM JOBS " +
+                " INNER JOIN MANAGER ON JOBS.id = MANAGER.managerID " +
+                " WHERE JOBS.isAvailable = ?";
         this.pst = con.prepareStatement(sql);
         this.pst.setBoolean(1, isAvailable);
         this.rs = pst.executeQuery();
@@ -128,7 +161,9 @@ public class JobService {
         while(this.rs.next() == true) {
             jobs.add(new Job(
                     this.rs.getInt("id"),
+                    this.rs.getString("username"),
                     this.rs.getString("company"),
+                    this.rs.getString("industry"),
                     this.rs.getString("title"),
                     this.rs.getDouble("salary"),
                     this.rs.getBoolean("isAvailable")
@@ -139,7 +174,8 @@ public class JobService {
 
     public ArrayList<Job> getAllRecords() throws SQLException {
         ArrayList<Job> jobs = new ArrayList<>();
-        this.sql = "SELECT * FROM JOBS";
+        this.sql = "SELECT * FROM JOBS " +
+                " INNER JOIN MANAGER ON JOBS.id = MANAGER.managerID ";
         this.stmt = con.createStatement();
         this.rs = stmt.executeQuery(this.sql);
         this.con.commit();						// save changes
@@ -147,7 +183,9 @@ public class JobService {
         while(this.rs.next() == true) {
             jobs.add(new Job(
                     this.rs.getInt("id"),
+                    this.rs.getString("username"),
                     this.rs.getString("company"),
+                    this.rs.getString("industry"),
                     this.rs.getString("title"),
                     this.rs.getDouble("salary"),
                     this.rs.getBoolean("isAvailable")

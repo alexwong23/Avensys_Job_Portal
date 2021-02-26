@@ -7,6 +7,11 @@ public class Account {
     private String password;
     private String type;
 
+    // used when retrieving records for comparison
+    public Account(String username) {
+        this.username = username;
+    }
+
     // used to validate login
     public Account(String username, String password) {
         this.username = username;

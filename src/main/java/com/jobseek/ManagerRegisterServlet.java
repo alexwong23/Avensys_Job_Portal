@@ -1,7 +1,7 @@
 package com.jobseek;
 
 import com.jobseek.model.*;
-import com.jobseek.service.SeekerService;
+import com.jobseek.service.ManagerService;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
@@ -15,10 +15,10 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 @WebServlet(
-        name = "registerservlet",
-        urlPatterns = "/register"
+        name = "managerregisterservlet",
+        urlPatterns = "/managerregister"
 )
-public class RegisterServlet extends HttpServlet {
+public class ManagerRegisterServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -38,14 +38,14 @@ public class RegisterServlet extends HttpServlet {
             delete and create new account table
             populate account table with fake data
          */
-        SeekerService seekerService = (SeekerService) servletContext.getAttribute( "seekerService" );
-        if(seekerService == null) {
+        ManagerService managerService = (ManagerService) servletContext.getAttribute( "managerService" );
+        if(managerService == null) {
             try {
-                seekerService = new SeekerService();
-                seekerService.createTable();
-                seekerService.populateTable();
+                managerService = new ManagerService();
+                managerService.createTable();
+                managerService.populateTable();
                 // save it to the application scope
-                servletContext.setAttribute( "seekerService", seekerService);
+                servletContext.setAttribute( "managerService", managerService);
             } catch (SQLException sqe) {
                 sqe.printStackTrace();
             } catch(Exception e) {
@@ -53,7 +53,7 @@ public class RegisterServlet extends HttpServlet {
             }
         }
 
-        RequestDispatcher view = req.getRequestDispatcher("WEB-INF/view/register.jsp");
+        RequestDispatcher view = req.getRequestDispatcher("WEB-INF/view/managerregister.jsp");
         view.forward(req, resp);
     }
 
@@ -62,49 +62,39 @@ public class RegisterServlet extends HttpServlet {
 
         ServletContext servletContext = getServletContext();
 
-        SeekerService seekerService = (SeekerService) servletContext.getAttribute( "seekerService" );
+        ManagerService managerService = (ManagerService) servletContext.getAttribute( "managerService" );
 
         String username = req.getParameter("username");
         String password = req.getParameter("password");
         String confirm = req.getParameter("confirm");
-        String educationLevel = req.getParameter("educationLevel");
-        String school = req.getParameter("school");
-        String yearGraduatedString = req.getParameter("yearGraduated");
-        int yearGraduated = 0;
-        try {
-            yearGraduated = Integer.parseInt(yearGraduatedString);
-        } catch (Exception e) {
-            e.printStackTrace();
-            req.setAttribute("registerError", "Register Failed: Year not an integer");
-            RequestDispatcher view = req.getRequestDispatcher("WEB-INF/view/register.jsp");
-            view.forward(req, resp);
-            return;
-        }
+        String company = req.getParameter("company");
+        String title = req.getParameter("title");
+        String industry = req.getParameter("industry");
 
-        Seeker newSeeker = new Seeker(username, password, educationLevel, school, yearGraduated);
+        Manager newManager = new Manager(username, password, company, industry);
         if(!password.equals(confirm)) {
             // password and confirm password has to be the same
             req.setAttribute("registerError", "Register Failed: Passwords do not match");
-            RequestDispatcher view = req.getRequestDispatcher("WEB-INF/view/register.jsp");
+            RequestDispatcher view = req.getRequestDispatcher("WEB-INF/view/managerregister.jsp");
             view.forward(req, resp);
             return;
         }
 
         try {
-            if(seekerService.insertOneRecord(newSeeker)) {
+            if(managerService.insertOneRecord(newManager)) {
                 // if registered account
                 // set current account
                 HttpSession session = req.getSession(true);
                 req.setAttribute("registerError", null);
-                session.setAttribute("currentAccount", (Account) newSeeker);
-                log("currentAccount was added after login: " + newSeeker);
+                session.setAttribute("currentAccount", (Account) newManager);
+                log("currentAccount was added after login: " + newManager);
                 // redirect to home page with information
                 resp.sendRedirect("");
             } else {
                 // display error at register page
                 req.setAttribute("registerError", "Register Failed: Username has been taken");
                 log("Register Failed: Username has been taken");
-                RequestDispatcher view = req.getRequestDispatcher("WEB-INF/view/register.jsp");
+                RequestDispatcher view = req.getRequestDispatcher("WEB-INF/view/managerregister.jsp");
                 view.forward(req, resp);
             }
         } catch (SQLException e) {

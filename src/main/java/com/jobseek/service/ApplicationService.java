@@ -81,6 +81,7 @@ public class ApplicationService {
         ArrayList<Job> jobs = new ArrayList<>();
         this.sql = "SELECT * FROM JOBS " +
                 " INNER JOIN APPLICATIONS ON JOBS.id = APPLICATIONS.jobID " +
+                " INNER JOIN APPLICATIONS ON SEEKERS.id = APPLICATIONS.seekerID " +
                 " WHERE APPLICATIONS.seekerID = ?";
         this.pst = con.prepareStatement(sql);
         this.pst.setInt(1, seekerID);
@@ -89,8 +90,10 @@ public class ApplicationService {
         this.con.rollback();     				// If There Is Error
         while(this.rs.next() == true) {
             jobs.add(new Job(
-                    this.rs.getInt("id"),
+                    this.rs.getInt("JOBS.id"),
+                    this.rs.getString("username"),
                     this.rs.getString("company"),
+                    this.rs.getString("industry"),
                     this.rs.getString("title"),
                     this.rs.getDouble("salary"),
                     this.rs.getBoolean("isAvailable")

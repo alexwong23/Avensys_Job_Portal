@@ -10,14 +10,14 @@
         </tag:navbar>
 
         <div class="jumbotron">
-            <h1>Job Seeker Login</h1>
-            <p>Please login to view jobs.</p>
+            <h1>Hiring Manager Login</h1>
+            <p>Please login to create jobs.</p>
         </div>
 
         <div class="container">
             <div class="row justify-content-md-center">
                 <div class="myform form ">
-                  <form action="login" method="post">
+                  <form action="managerlogin" method="post">
                      <div class="form-group">
                         <label for="username">Username</label>
                         <input type="text" id="username" name="username" class="form-control" placeholder="Enter Username" required>
@@ -38,7 +38,7 @@
                      </div>
                      <hr>
                      <div class="form-group">
-                        <p class="text-center">Don't have an account? <a href="./register">Register here</a></p>
+                        <p class="text-center">Don't have an account? <a href="./managerregister">Register here</a></p>
                      </div>
                   </form>
               </div>
