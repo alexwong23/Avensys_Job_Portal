@@ -8,10 +8,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-import com.cafe.model.Account;
-import com.cafe.model.Bill;
+import com.cafe.model.Seeker;
 
-public class AccountService {
+public class SeekerService {
 
     private final String username = "root";
     private final String password = "password";
@@ -21,7 +20,7 @@ public class AccountService {
     ResultSet rs;
     String sql = null;
 
-    public AccountService() throws SQLException, ClassNotFoundException {
+    public SeekerService() throws SQLException, ClassNotFoundException {
         Class.forName("com.mysql.cj.jdbc.Driver");
         System.out.println("Driver loaded successfully");
         this.con = DriverManager.getConnection("jdbc:mysql://localhost/AVENSYS", username, password);
@@ -40,24 +39,27 @@ public class AccountService {
         this.batchStatements(new String[] {
                 "CREATE DATABASE IF NOT EXISTS AVENSYS",
                 "USE AVENSYS",
-                "DROP TABLE IF EXISTS ACCOUNTS",
-                "CREATE TABLE ACCOUNTS " +
+                "DROP TABLE IF EXISTS APPLICATIONS",  // cause of dependency
+                "DROP TABLE IF EXISTS SEEKERS",
+                "CREATE TABLE SEEKERS " +
                         "(id INTEGER NOT NULL AUTO_INCREMENT, " +
                         " username VARCHAR(255), " +
                         " password VARCHAR(255), " +
-                        " type VARCHAR(255), " +
+                        " educationLevel VARCHAR(255), " +
+                        " school VARCHAR(255), " +
+                        " yearGraduated INTEGER, " +
                         " PRIMARY KEY ( id ))"
         });
     }
 
     public void populateTable() throws SQLException {
         this.batchStatements(new String[] {
-                "INSERT INTO ACCOUNTS( username, password, type ) VALUES"
-                        + "('user1', 'password', 'jobseeker')",
-                "INSERT INTO ACCOUNTS( username, password, type ) VALUES"
-                        + "('user2', 'password', 'jobseeker')",
-                "INSERT INTO ACCOUNTS( username, password, type ) VALUES"
-                        + "('user3', 'password', 'company')"
+                "INSERT INTO SEEKERS( username, password, educationLevel, school, yearGraduated ) VALUES"
+                        + "('user1', 'pass', 'bachelors', 'Harvard', 2020 )",
+                "INSERT INTO SEEKERS( username, password, educationLevel, school, yearGraduated ) VALUES"
+                        + "('user2', 'pass', 'bachelors', 'NUS', 2009 )",
+                "INSERT INTO SEEKERS( username, password, educationLevel, school, yearGraduated ) VALUES"
+                        + "('user3', 'pass', 'masters', 'Oxford', 2000 )"
         });
     }
 
@@ -71,15 +73,18 @@ public class AccountService {
         con.rollback();     				// If There Is Error
     }
 
-    public boolean insertOneRecord(Account account) throws SQLException {
-        ArrayList<Account> accounts = this.getRecordsByUsernameAndType(account.getUsername(), account.getType());
-        if(accounts.size() > 0) return false;   // account with username exists
+    public boolean insertOneRecord(Seeker seeker) throws SQLException {
+        ArrayList<Seeker> seekers = this.getRecordsByUsername(seeker.getUsername());
+        if(seekers.size() > 0) return false;   // SEEKER with username exists
 
-        this.sql = "INSERT INTO ACCOUNTS(username, password, type) VALUES(?, ?, ?)";
+        this.sql = "INSERT INTO SEEKERS( username, password, educationLevel, school, yearGraduated ) "
+                + "VALUES(?, ?, ?, ?, ?)";
         this.pst = con.prepareStatement(sql);
-        this.pst.setString(1, account.getUsername());
-        this.pst.setString(2, account.getPassword());
-        this.pst.setString(3, account.getType());
+        this.pst.setString(1, seeker.getUsername());
+        this.pst.setString(2, seeker.getPassword());
+        this.pst.setString(3, seeker.getEducationLevel());
+        this.pst.setString(4, seeker.getSchool());
+        this.pst.setInt(5, seeker.getYearGraduated());
         int recordsUpdated = this.pst.executeUpdate();
         this.con.commit();						// save changes
         this.con.rollback();     				// If There Is Error
@@ -87,61 +92,68 @@ public class AccountService {
             System.out.println("Not Inserted!");
             return false;
         } else {
-            System.out.println("Inserted: " + account);
+            System.out.println("Inserted: " + seeker);
             return true;
         }
     }
 
-    public ArrayList<Account> getRecordsByUsernameAndType(String username, String type) throws SQLException {
-        ArrayList<Account> accounts = new ArrayList<Account>();
-        this.sql = "SELECT * FROM ACCOUNTS WHERE username = ? AND type = ?";
+    public ArrayList<Seeker> getRecordsByUsername(String username) throws SQLException {
+        ArrayList<Seeker> seekers = new ArrayList<Seeker>();
+        this.sql = "SELECT * FROM SEEKERS WHERE username = ?";
         this.pst = con.prepareStatement(sql);
         this.pst.setString(1, username);
-        this.pst.setString(2, type);
         this.rs = pst.executeQuery();
         this.con.commit();						// save changes
         this.con.rollback();     				// If There Is Error
         while(this.rs.next() == true) {
-            accounts.add(new Account(
+            seekers.add(new Seeker(
+                    this.rs.getInt("id"),
                     this.rs.getString("username"),
-                    this.rs.getString("type")
+                    this.rs.getString("educationLevel"),
+                    this.rs.getString("school"),
+                    this.rs.getInt("yearGraduated")
             ));
         }
-        return accounts;
+        return seekers;
     }
 
-    public Account getOneRecordByType(Account account) throws SQLException {
-        Account result = null;
-        this.sql = "SELECT * FROM ACCOUNTS WHERE username=? AND password=? AND type=?";
+    public Seeker getOneRecord(Seeker seeker) throws SQLException {
+        Seeker result = null;
+        this.sql = "SELECT * FROM SEEKERS WHERE username=? AND password=?";
         this.pst = con.prepareStatement(sql);
-        this.pst.setString(1, account.getUsername());
-        this.pst.setString(2, account.getPassword());
-        this.pst.setString(3, account.getType());
+        this.pst.setString(1, seeker.getUsername());
+        this.pst.setString(2, seeker.getPassword());
         this.rs = this.pst.executeQuery();
         this.con.commit();						// save changes
         this.con.rollback();                    // If There Is Error
         if(this.rs.next() != false) {
-            result = new Account(
-                this.rs.getString("username"),
-                this.rs.getString("type")
+            result = new Seeker(
+                    this.rs.getInt("id"),
+                    this.rs.getString("username"),
+                    this.rs.getString("educationLevel"),
+                    this.rs.getString("school"),
+                    this.rs.getInt("yearGraduated")
             );
         }
         return result;
     }
 
-    public ArrayList<Account> getAllRecords() throws SQLException {
-        ArrayList<Account> accounts = new ArrayList<Account>();
-        this.sql = "SELECT * FROM ACCOUNTS";
+    public ArrayList<Seeker> getAllRecords() throws SQLException {
+        ArrayList<Seeker> seekers = new ArrayList<Seeker>();
+        this.sql = "SELECT * FROM SEEKERS";
         this.stmt = con.createStatement();
         this.rs = stmt.executeQuery(this.sql);
         this.con.commit();						// save changes
         this.con.rollback();     				// If There Is Error
         while(this.rs.next() == true) {
-            accounts.add(new Account(
+            seekers.add(new Seeker(
+                    this.rs.getInt("id"),
                     this.rs.getString("username"),
-                    this.rs.getString("type")
+                    this.rs.getString("educationLevel"),
+                    this.rs.getString("school"),
+                    this.rs.getInt("yearGraduated")
             ));
         }
-        return accounts;
+        return seekers;
     }
 }

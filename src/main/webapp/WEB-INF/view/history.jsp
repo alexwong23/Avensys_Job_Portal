@@ -1,14 +1,14 @@
 <%@ page import ="java.util.*" %>
 <%@ page import ="com.cafe.model.Bill" %>
-<%@ page import ="com.cafe.model.Account" %>
+<%@ page import ="com.cafe.model.Seeker" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tag"%>
 <!DOCTYPE html>
 <html>
     <tag:header/>
     <body>
-        <% Account currentAccount = (Account) session.getAttribute("currentAccount"); %>
-        <tag:navbar userSession="<%= currentAccount %>">
-        </tag:navbar>
+        <% Seeker currentSeeker = (Seeker) session.getAttribute("currentSeeker"); %>
+                <tag:navbar userSession="<%= currentSeeker %>">
+                </tag:navbar>
 
         <div class="jumbotron">
             <h1>Bill History</h1>

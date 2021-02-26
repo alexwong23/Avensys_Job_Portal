@@ -10,7 +10,7 @@
         </tag:navbar>
 
         <div class="jumbotron">
-            <h1>Login</h1>
+            <h1>Job Seeker Login</h1>
             <p>Please enter your username and password.</p>
         </div>
 
@@ -20,18 +20,11 @@
                   <form action="login" method="post">
                      <div class="form-group">
                         <label for="username">Username</label>
-                        <input type="text" id="username" name="username" class="form-control" placeholder="Enter Username">
+                        <input type="text" id="username" name="username" class="form-control" placeholder="Enter Username" required>
                      </div>
                      <div class="form-group">
                         <label for="password">Password</label>
-                        <input type="password" id="password" name="password" class="form-control" placeholder="Enter Password">
-                     </div>
-                     <div class="form-group">
-                        <label for="typeSelect">Select a Type</label>
-                        <select class="form-control" id="typeSelect" name="type" size="2">
-                            <option value="jobseeker" selected>Jobseeker</option>
-                            <option value="company">Company</option>
-                        </select>
+                        <input type="password" id="password" name="password" class="form-control" placeholder="Enter Password" required>
                      </div>
                      <%
                         String loginError = (String) request.getAttribute("loginError");
@@ -45,7 +38,7 @@
                      </div>
                      <hr>
                      <div class="form-group">
-                        <p class="text-center">Don't have account? <a href="./register">Register here</a></p>
+                        <p class="text-center">Don't have an account? <a href="./register">Register here</a></p>
                      </div>
                   </form>
               </div>

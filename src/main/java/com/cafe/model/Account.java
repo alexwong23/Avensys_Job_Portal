@@ -2,16 +2,26 @@ package com.cafe.model;
 
 public class Account {
 
+    private int id;
     private String username;
     private String password;
     private String type;
 
+    // used to validate login
+    public Account(String username, String password) {
+        this.username = username;
+        // todo: store password as a hash
+        this.password = password;
+    }
+
     // used when retrieving records for comparison
-    public Account(String username, String type) {
+    public Account(int id, String username, String type) {
+        this.id = id;
         this.username = username;
         this.type = type;
     }
 
+    // used for inserting records
     public Account(String username, String password, String type) {
         this.username = username;
         // todo: store password as a hash
@@ -19,6 +29,9 @@ public class Account {
         this.type = type;
     }
 
+    public int getID() {
+        return this.id;
+    }
     public String getUsername() {
         return this.username;
     }
@@ -34,8 +47,5 @@ public class Account {
     }
     public void setPassword(String password) {
         this.password = password;
-    }
-    public void setType(String type) {
-        this.type = type;
     }
 }

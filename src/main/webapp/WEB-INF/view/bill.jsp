@@ -1,14 +1,14 @@
 <%@ page import ="java.util.*" %>
 <%@ page import ="com.cafe.model.Item" %>
 <%@ page import ="com.cafe.model.Bill" %>
-<%@ page import ="com.cafe.model.Account" %>
+<%@ page import ="com.cafe.model.Seeker" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tag"%>
 <!DOCTYPE html>
 <html>
     <tag:header/>
     <body>
-        <% Account currentAccount = (Account) session.getAttribute("currentAccount"); %>
-        <tag:navbar userSession="<%= currentAccount %>">
+        <% Seeker currentSeeker = (Seeker) session.getAttribute("currentSeeker"); %>
+        <tag:navbar userSession="<%= currentSeeker %>">
         </tag:navbar>
 
         <div class="jumbotron">
@@ -70,6 +70,33 @@
               </form>
             </div>
         </div>
+
+        <form method="post" action="food">
+            <fieldset>
+                <legend>What would you like to buy?</legend>
+                <div class="form-group">
+                    <label for="itemSelect">Select an Item</label>
+                    <select class="form-control" id="itemSelect" name="Item">
+                    <%
+                        for(int i = 0; i < result.size(); i++) {
+                            out.println("<option>" + result.get(i).getName() + "</option>");
+                        }
+                    %>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="quantitySelect">Select a Quantity</label>
+                    <select class="form-control" id="quantitySelect" name="Quantity" size="3">
+                        <option value="1" selected>1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Buy</button>
+            </fieldset>
+       </form>
         <br>
 
         <tag:footer/>

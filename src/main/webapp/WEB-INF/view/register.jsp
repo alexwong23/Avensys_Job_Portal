@@ -23,20 +23,37 @@
                         <input type="text" id="username" name="username" class="form-control" placeholder="Enter Username" required>
                      </div>
                      <div class="form-group">
-                         <label for="typeSelect">Select a Type</label>
-                         <select class="form-control" id="typeSelect" name="type" size="2">
-                             <option value="jobseeker" selected>Jobseeker</option>
-                             <option value="company">Company</option>
-                         </select>
-                     </div>
-                     <div class="form-group">
                         <label for="password">Password</label>
                         <input type="password" id="password" name="password" class="form-control" placeholder="Enter Password" required>
                      </div>
                      <div class="form-group">
                          <label for="confirm">Confirm Password</label>
                          <input type="password" id="confirm" name="confirm" class="form-control" placeholder="Confirm Password" required>
-                      </div>
+                     </div>
+                     <div class="form-group">
+                         <label for="educationSelect">Select your highest level of education</label>
+                         <select class="form-control" id="educationSelect" name="educationLevel" size="3">
+                             <option value="primary" selected>Primary</option>
+                             <option value="secondary">Secondary</option>
+                             <option value="tertiary">Short-cycle Tertiary</option>
+                             <option value="bachelor">Bachelor's or equivalent</option>
+                             <option value="master">Master's or equivalent</option>
+                             <option value="doctoral">Doctoral or equivalent</option>
+                         </select>
+                     </div>
+                     <div class="form-group">
+                         <label for="school">School</label>
+                         <input type="text" id="school" name="school" class="form-control" placeholder="Enter the name of your School">
+                     </div>
+                     <div class="form-group">
+                         <label for="yearSelect">Year Graduated</label>
+                         <select class="form-control" id="yearSelect" name="yearGraduated" size="3">
+                             <% for(int i = 2021; i >= 1900; i--) { %>
+                                 <option value=<%= i %> selected><%= i %></option>
+                             <% } %>
+                         </select>
+                     </div>
+
                      <%
                         String registerError = (String) request.getAttribute("registerError");
                         if(registerError != null) {

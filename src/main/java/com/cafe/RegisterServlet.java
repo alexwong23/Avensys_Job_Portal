@@ -1,8 +1,7 @@
 package com.cafe;
 
 import com.cafe.model.*;
-import com.cafe.service.AccountService;
-import com.cafe.service.FoodService;
+import com.cafe.service.SeekerService;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
@@ -13,11 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @WebServlet(
         name = "registerservlet",
@@ -43,14 +38,14 @@ public class RegisterServlet extends HttpServlet {
             delete and create new account table
             populate account table with fake data
          */
-        AccountService accountService = (AccountService) servletContext.getAttribute( "accountService" );
-        if(accountService == null) {
+        SeekerService seekerService = (SeekerService) servletContext.getAttribute( "seekerService" );
+        if(seekerService == null) {
             try {
-                accountService = new AccountService();
-                accountService.createTable();
-                accountService.populateTable();
+                seekerService = new SeekerService();
+                seekerService.createTable();
+                seekerService.populateTable();
                 // save it to the application scope
-                servletContext.setAttribute( "accountService", accountService );
+                servletContext.setAttribute( "seekerService", seekerService);
             } catch (SQLException sqe) {
                 sqe.printStackTrace();
             } catch(Exception e) {
@@ -67,14 +62,26 @@ public class RegisterServlet extends HttpServlet {
 
         ServletContext servletContext = getServletContext();
 
-        AccountService accountService = (AccountService) servletContext.getAttribute( "accountService" );
+        SeekerService seekerService = (SeekerService) servletContext.getAttribute( "seekerService" );
 
         String username = req.getParameter("username");
-        String type = req.getParameter("type");
         String password = req.getParameter("password");
         String confirm = req.getParameter("confirm");
+        String educationLevel = req.getParameter("educationLevel");
+        String school = req.getParameter("school");
+        String yearGraduatedString = req.getParameter("yearGraduated");
+        int yearGraduated = 0;
+        try {
+            yearGraduated = Integer.parseInt(yearGraduatedString);
+        } catch (Exception e) {
+            e.printStackTrace();
+            req.setAttribute("registerError", "Register Failed: Year not an integer");
+            RequestDispatcher view = req.getRequestDispatcher("WEB-INF/view/register.jsp");
+            view.forward(req, resp);
+            return;
+        }
 
-        Account newAccount = new Account(username, password, type);
+        Seeker newSeeker = new Seeker(username, password, educationLevel, school, yearGraduated);
         if(!password.equals(confirm)) {
             // password and confirm password has to be the same
             req.setAttribute("registerError", "Register Failed: Passwords do not match");
@@ -84,13 +91,13 @@ public class RegisterServlet extends HttpServlet {
         }
 
         try {
-            if(accountService.insertOneRecord(newAccount)) {
+            if(seekerService.insertOneRecord(newSeeker)) {
                 // if registered account
                 // set current account
                 HttpSession session = req.getSession(true);
                 req.setAttribute("registerError", null);
-                session.setAttribute("currentAccount", newAccount);
-                log("currentAccount was added after login: " + newAccount);
+                session.setAttribute("currentAccount", (Account) newSeeker);
+                log("currentAccount was added after login: " + newSeeker);
                 // redirect to home page with information
                 resp.sendRedirect("");
             } else {

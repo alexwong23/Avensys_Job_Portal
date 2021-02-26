@@ -1,5 +1,6 @@
-com/cafe/model/FoodType.class
+com/cafe/service/SeekerService.class
 com/cafe/LogoutServlet.class
-com/cafe/HistoryServlet.class
-com/cafe/FoodServlet.class
-com/cafe/BillServlet.class
+com/cafe/service/JobService.class
+com/cafe/service/ApplicationService.class
+com/cafe/model/Job.class
+com/cafe/model/Seeker.class
