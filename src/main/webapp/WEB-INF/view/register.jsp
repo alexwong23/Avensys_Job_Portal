@@ -1,5 +1,5 @@
 <%@ page import ="java.util.*" %>
-<%@ page import ="com.cafe.model.Account" %>
+<%@ page import ="com.jobseek.model.Account" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tag"%>
 <!DOCTYPE html>
 <html>

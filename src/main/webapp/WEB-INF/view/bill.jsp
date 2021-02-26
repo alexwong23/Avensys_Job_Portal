@@ -1,7 +1,6 @@
 <%@ page import ="java.util.*" %>
-<%@ page import ="com.cafe.model.Item" %>
-<%@ page import ="com.cafe.model.Bill" %>
-<%@ page import ="com.cafe.model.Seeker" %>
+<%@ page import ="com.jobseek.model.Bill" %>
+<%@ page import ="com.jobseek.model.Seeker" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tag"%>
 <!DOCTYPE html>
 <html>

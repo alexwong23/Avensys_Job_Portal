@@ -1,4 +1,4 @@
-<%@ page import ="com.cafe.model.Account" %>
+<%@ page import ="com.jobseek.model.Account" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tag"%>
 <!DOCTYPE html>
 <html lang="en">
@@ -8,8 +8,8 @@
         <tag:navbar userSession="<%= currentAccount %>">
         </tag:navbar>
 
-        <div class="homepage" style="background-image: url('/jobportal/images/cafe_wallpaper.jpeg'); height: 500px; filter: brightness(90%); ">
-            <a class="btn btn-success center" href="./food" role="button">Buy Food</a>
+        <div class="homepage" style="background-image: url('/jobseek/images/find_job.jpg'); height: 500px; filter: brightness(90%); ">
+            <a class="btn btn-success center" href="/jobseek/jobs" role="button">View Jobs</a>
         </div>
 
         <tag:footer/>

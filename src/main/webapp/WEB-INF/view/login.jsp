@@ -1,5 +1,5 @@
 <%@ page import ="java.util.*" %>
-<%@ page import ="com.cafe.model.Account" %>
+<%@ page import ="com.jobseek.model.Account" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tag"%>
 <!DOCTYPE html>
 <html>
@@ -11,7 +11,7 @@
 
         <div class="jumbotron">
             <h1>Job Seeker Login</h1>
-            <p>Please enter your username and password.</p>
+            <p>Please login to view jobs.</p>
         </div>
 
         <div class="container">

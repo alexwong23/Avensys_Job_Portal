@@ -1,7 +1,7 @@
-package com.cafe;
+package com.jobseek;
 
-import com.cafe.model.*;
-import com.cafe.service.SeekerService;
+import com.jobseek.model.*;
+import com.jobseek.service.SeekerService;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;

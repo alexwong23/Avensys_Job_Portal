@@ -1,4 +1,4 @@
-package com.cafe.service;
+package com.jobseek.service;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-import com.cafe.model.Seeker;
+import com.jobseek.model.Seeker;
 
 public class SeekerService {
 

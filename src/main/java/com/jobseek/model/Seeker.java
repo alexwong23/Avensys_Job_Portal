@@ -1,4 +1,4 @@
-package com.cafe.model;
+package com.jobseek.model;
 
 public class Seeker extends Account {
 

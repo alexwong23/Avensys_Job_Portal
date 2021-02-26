@@ -1,6 +1,6 @@
-package com.cafe;
+package com.jobseek;
 
-import com.cafe.model.*;
+import com.jobseek.model.*;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;

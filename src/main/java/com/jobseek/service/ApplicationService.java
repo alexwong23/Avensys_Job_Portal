@@ -1,4 +1,4 @@
-package com.cafe.service;
+package com.jobseek.service;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -8,8 +8,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-import com.cafe.model.Account;
-import com.cafe.model.Job;
+import com.jobseek.model.Account;
+import com.jobseek.model.Job;
 
 public class ApplicationService {
 

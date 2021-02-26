@@ -1,6 +1,6 @@
 <%@ page import ="java.util.*" %>
-<%@ page import ="com.cafe.model.Account" %>
-<%@ page import ="com.cafe.model.Job" %>
+<%@ page import ="com.jobseek.model.Account" %>
+<%@ page import ="com.jobseek.model.Job" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tag"%>
 <!DOCTYPE html>
 <html>
