@@ -15,10 +15,10 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 @WebServlet(
-        name = "applyjobservlet",
-        urlPatterns = "/applyjob"
+        name = "SeekerApplyJobServlet",
+        urlPatterns = "/seekerapplyjob"
 )
-public class ApplyJobServlet extends HttpServlet {
+public class SeekerApplyJobServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -33,33 +33,22 @@ public class ApplyJobServlet extends HttpServlet {
             return;                                     // required so it does not execute rest of code
         }
 
-        // job seeker applies for a job
-        String idString = req.getParameter("jobID");
-        log("job ID parameter is " + idString);
-        int jobID = 2;
-        try {
-            jobID = Integer.parseInt(idString);
-        } catch (Exception e) {
-            e.printStackTrace();
-            req.setAttribute("applyJobError", "Apply Job Failed: ID not an integer");
-            RequestDispatcher view = req.getRequestDispatcher("WEB-INF/view/jobs.jsp");
-            view.forward(req, resp);
-            return;
-        }
-
         ApplicationService applicationService = (ApplicationService) servletContext.getAttribute( "applicationService" );
         try {
+            String idString = req.getParameter("jobID");
+            int jobID = Integer.parseInt(idString);
             if(applicationService.insertOneRecord(currentAccount, jobID)) {
-                // redirect to home page with information
                 resp.sendRedirect("./history");
                 return;
             } else {
-                // display error at register page
-                req.setAttribute("applyJobError", "Apply Job Failed: Job record not inserted");
-                RequestDispatcher view = req.getRequestDispatcher("WEB-INF/view/jobs.jsp");
-                view.forward(req, resp);
+                resp.sendRedirect("./jobs"); // todo: error not displayed
+                return;
             }
-        } catch (SQLException e) {
+        } catch (ArithmeticException ae) {
+            ae.printStackTrace();
+        } catch (SQLException sqe) {
+            sqe.printStackTrace();
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

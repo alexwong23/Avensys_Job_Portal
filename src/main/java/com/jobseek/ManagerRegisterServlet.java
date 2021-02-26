@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 @WebServlet(
-        name = "managerregisterservlet",
+        name = "ManagerRegisterServlet",
         urlPatterns = "/managerregister"
 )
 public class ManagerRegisterServlet extends HttpServlet {

@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 @WebServlet(
-        name = "historyservlet",
+        name = "HistoryServlet",
         urlPatterns = "/history"
 )
 public class HistoryServlet extends HttpServlet {

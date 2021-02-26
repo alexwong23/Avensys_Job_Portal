@@ -10,6 +10,7 @@ import java.util.ArrayList;
 
 import com.jobseek.model.Account;
 import com.jobseek.model.Job;
+import com.jobseek.model.Seeker;
 
 public class ApplicationService {
 
@@ -32,6 +33,7 @@ public class ApplicationService {
                         "(id INTEGER NOT NULL AUTO_INCREMENT, " +
                         " seekerID INTEGER, " +
                         " jobID INTEGER, " +
+                        " accepted BOOLEAN, " +
                         " PRIMARY KEY ( id )," +
                         " FOREIGN KEY ( seekerID ) REFERENCES SEEKERS(id)," +
                         " FOREIGN KEY ( jobID ) REFERENCES JOBS(id)) "
@@ -48,8 +50,9 @@ public class ApplicationService {
 
     public void populateMockData() throws SQLException {
         this.batchStatements(new String[] {
-                "INSERT INTO APPLICATIONS( seekerID, jobID ) VALUES ( 1, 1 )",
-                "INSERT INTO APPLICATIONS( seekerID, jobID ) VALUES ( 2, 1 )"
+                "INSERT INTO APPLICATIONS( seekerID, jobID, accepted ) VALUES ( 1, 1, FALSE )",
+                "INSERT INTO APPLICATIONS( seekerID, jobID, accepted ) VALUES ( 2, 1, FALSE )",
+                "INSERT INTO APPLICATIONS( seekerID, jobID, accepted ) VALUES ( 3, 1, FALSE )"
         });
     }
 
@@ -64,7 +67,7 @@ public class ApplicationService {
     }
 
     public boolean insertOneRecord(Account account, int jobID) throws SQLException {
-        this.sql = "INSERT INTO APPLICATIONS( seekerID, jobID ) VALUES(?, ?)";
+        this.sql = "INSERT INTO APPLICATIONS( seekerID, jobID, accepted ) VALUES(?, ?, FALSE)";
         this.pst = con.prepareStatement(sql);
         this.pst.setInt(1, account.getAccountID());
         this.pst.setInt(2, jobID);
@@ -76,5 +79,55 @@ public class ApplicationService {
         } else {
             return true;
         }
+    }
+
+    public boolean updateOneRecordBySeekerJobID(int seekerID, int jobID, boolean accepted) throws SQLException {
+        // update all others to false
+        if(accepted) {
+            this.updateRecordsByJobIDToAcceptFalse(jobID);
+        }
+
+        this.sql = "UPDATE APPLICATIONS SET accepted = ? WHERE seekerID = ? AND jobID = ?";
+        this.pst = con.prepareStatement(sql);
+        this.pst.setBoolean(1, accepted);
+        this.pst.setInt(2, seekerID);
+        this.pst.setInt(3, jobID);
+        int recordInserted = this.pst.executeUpdate();
+        this.con.commit();						// save changes
+        this.con.rollback();     				// If There Is Error
+        if(recordInserted == 0) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public void updateRecordsByJobIDToAcceptFalse(int jobID) throws SQLException {
+        this.batchStatements(new String[] {
+                "UPDATE APPLICATIONS SET accepted = FALSE WHERE jobID = " + jobID,
+                "UPDATE JOBS SET isAvailable = FALSE WHERE id = " + jobID
+        });
+    }
+
+    public Seeker getOneRecordsByJobIDAcceptTrue(int jobID) throws SQLException {
+        Seeker result = null;
+        this.sql = "SELECT * FROM SEEKERS " +
+                " INNER JOIN APPLICATIONS ON SEEKERS.id = APPLICATIONS.seekerID " +
+                " WHERE APPLICATIONS.jobID = ? AND APPLICATIONS.accepted > 0";
+        this.pst = con.prepareStatement(sql);
+        this.pst.setInt(1, jobID);
+        this.rs = this.pst.executeQuery();
+        this.con.commit();						// save changes
+        this.con.rollback();                    // If There Is Error
+        if(this.rs.next() != false) {
+            result = new Seeker(
+                    this.rs.getInt("id"),
+                    this.rs.getString("username"),
+                    this.rs.getString("educationLevel"),
+                    this.rs.getString("school"),
+                    this.rs.getInt("yearGraduated")
+            );
+        }
+        return result;
     }
 }

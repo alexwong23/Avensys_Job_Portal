@@ -64,14 +64,14 @@ public class ApplicationServlet extends HttpServlet {
 
         SeekerService seekerService = rootService.getSeekerService();
         JobService jobService = rootService.getJobService();
+        ApplicationService applicationService = rootService.getApplicationService();
         try {
             String jobIDString = req.getPathInfo();
             int jobID = Integer.parseInt(jobIDString.replace("/",""));
-            log(String.valueOf(jobID));
             // show seekers who applied for this hiring manager's job
             req.setAttribute("seekers", seekerService.getRecordsByManagerAccountAndJobID(currentAccount, jobID));
             req.setAttribute("job", jobService.getOneRecordByID(jobID));
-            log(jobService.getOneRecordByID(jobID).getTitle());
+            req.setAttribute("hired", applicationService.getOneRecordsByJobIDAcceptTrue(jobID));
         } catch (SQLException sqe) {
             sqe.printStackTrace();
         } catch(Exception e) {

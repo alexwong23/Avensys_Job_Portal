@@ -29,7 +29,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                    <form method="post" action="applyjob" id="jobForm">
+                    <form method="post" action="/jobseek/seekerapplyjob" id="jobForm">
                     <input type="hidden" id="hiddenJobID" name="jobID" value="">
                     <% List<Job> availableJobs = (List<Job>) request.getAttribute("jobs"); %>
                     <% for(Job j: availableJobs) { %>
@@ -42,7 +42,7 @@
                         <% if(currentAccount == null || !currentAccount.getType().equals("seeker")) { %>
                             <td></td>
                         <% } else { %>
-                            <td><button type="submit" id="applyJob" class="btn btn-primary" value=<%= j.getJobID() %> >Apply</button></td>
+                            <td><button type="submit" id="seekerApplyJob" class="btn btn-primary" value=<%= j.getJobID() %> >Apply</button></td>
                         <% } %>
                         </tr>
                     <% } %>

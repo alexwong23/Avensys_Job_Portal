@@ -39,15 +39,18 @@
                         <td><%= j.getIndustry() %></td>
                         <td><%= j.getTitle() %></td>
                         <td>$<%= j.getSalary() %></td>
-                        <% if(currentAccount.getType().equals("seeker")) { %>
-                            <td><button type="submit" id="seekerRemoveJob" class="btn btn-danger" value=<%= j.getJobID() %> >Remove</button></td>
-                        <% } else if (currentAccount.getType().equals("manager")) { %>
+                        <% if(currentAccount.getType().equals("manager")) { %>
                             <td>
                                 <button id="managerViewApplications" class="btn btn-secondary" onclick="location.href='/jobseek/applications/<%= j.getJobID() %>'" type="button">
-                                    Applications
+                                    View Applicants
                                 </button>
-                                <button type="submit" id="managerRemoveJob" class="btn btn-danger" value=<%= j.getJobID() %>>Remove</button>
                             </td>
+                        <% } else if(currentAccount.getType().equals("seeker")) { %>
+                            <% if(j.getAvailable()) { %>
+                                <td></td>
+                            <% } else { %>
+                                <td>Not available</td>
+                            <% } %>
                         <% } %>
                         </tr>
                     <% } %>

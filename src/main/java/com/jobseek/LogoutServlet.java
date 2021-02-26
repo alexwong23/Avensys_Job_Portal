@@ -12,7 +12,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 @WebServlet(
-        name = "logoutservlet",
+        name = "LogoutServlet",
         urlPatterns = "/logout"
 )
 public class LogoutServlet extends HttpServlet {

@@ -13,7 +13,7 @@
 
         <div class="jumbotron">
             <% Job job = (Job) request.getAttribute("job"); %>
-            <h1>Application Details</h1>
+            <h1>Applicants' Details</h1>
             <h5><%= job.getTitle() %> at <%= job.getCompany() %> for $<%= job.getSalary() %></h5>
         </div>
 
@@ -31,10 +31,11 @@
                   </tr>
                 </thead>
                 <tbody>
-                    <form method="post" action="acceptseeker" id="applicationForm">
+                    <form method="post" action="/jobseek/manageracceptjob" id="applicationForm">
                     <input type="hidden" id="hiddenSeekerID" name="seekerID" value="">
-                    <input type="hidden" id="hiddenJobID" name="jobID" value=value=<%= job.getJobID() %>>
+                    <input type="hidden" id="hiddenJobID" name="jobID" value=<%= job.getJobID() %>>
                     <% List<Seeker> seekers = (List<Seeker>) request.getAttribute("seekers"); %>
+                    <% Seeker hired = (Seeker) request.getAttribute("hired"); %>
                     <% for(Seeker s: seekers) { %>
                         <tr>
                         <th scope="row"><%= s.getAccountID() %></th>
@@ -42,10 +43,13 @@
                         <td><%= s.getEducationLevel() %></td>
                         <td><%= s.getSchool() %></td>
                         <td>$<%= s.getYearGraduated() %></td>
-                        <td>
-                            <button type="submit" id="acceptSeeker" class="btn btn-success" value=<%= s.getAccountID() %>>Accept</button>
-                            <button type="submit" id="rejectSeeker" class="btn btn-danger" value=<%= s.getAccountID() %>>Reject</button>
-                        </td>
+                        <% if(job.getAvailable()) { %>
+                            <td><button type="submit" id="managerAcceptJob" class="btn btn-success" value=<%= s.getAccountID() %>>Accept</button></td>
+                        <% } else if(hired != null && hired.getAccountID() == s.getAccountID()) { %>
+                            <td>Hired</td>
+                        <% } else { %>
+                            <td></td>
+                        <% } %>
                         </tr>
                     <% } %>
                 </tbody>

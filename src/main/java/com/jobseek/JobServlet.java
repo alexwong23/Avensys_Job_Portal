@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 @WebServlet(
-        name = "jobservlet",
+        name = "JobServlet",
         urlPatterns = "/jobs"
 )
 public class JobServlet extends HttpServlet {

@@ -50,15 +50,15 @@ public class JobService {
     public void populateMockData() throws SQLException {
         this.batchStatements(new String[] {
                 "INSERT INTO JOBS( managerID, title, salary, isAvailable ) VALUES"
-                        + "(1, 'banker', 4500.00, true )",
+                        + "(1, 'Project Manager', 5000.00, true )",
                 "INSERT INTO JOBS( managerID, title, salary, isAvailable ) VALUES"
-                        + "(1, 'salesman', 3300.00, false )",
+                        + "(1, 'Technology Consultant', 3500.00, false )",
                 "INSERT INTO JOBS( managerID, title, salary, isAvailable ) VALUES"
-                        + "(2, 'engineer', 4000.00, true )",
+                        + "(2, 'Digital Marketer', 4000.00, true )",
                 "INSERT INTO JOBS( managerID, title, salary, isAvailable ) VALUES"
-                        + "(3, 'project manager', 6250.00, true )",
+                        + "(3, 'Project Lead', 4000.00, true )",
                 "INSERT INTO JOBS( managerID, title, salary, isAvailable ) VALUES"
-                        + "(3, 'CEO', 25000.00, true )"
+                        + "(3, 'CEO', 20000.00, true )"
         });
     }
 
