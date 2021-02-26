@@ -27,7 +27,7 @@ public class SeekerService {
         this.batchStatements(new String[] {
                 "CREATE DATABASE IF NOT EXISTS AVENSYS",
                 "USE AVENSYS",
-                "CREATE TABLE SEEKERS " +
+                "CREATE TABLE IF NOT EXISTS SEEKERS " +
                         "(id INTEGER NOT NULL AUTO_INCREMENT, " +
                         " username VARCHAR(255), " +
                         " password VARCHAR(255), " +

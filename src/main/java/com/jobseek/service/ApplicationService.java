@@ -28,7 +28,7 @@ public class ApplicationService {
         this.batchStatements(new String[] {
                 "CREATE DATABASE IF NOT EXISTS AVENSYS",
                 "USE AVENSYS",
-                "CREATE TABLE APPLICATIONS " +
+                "CREATE TABLE IF NOT EXISTS APPLICATIONS " +
                         "(id INTEGER NOT NULL AUTO_INCREMENT, " +
                         " seekerID INTEGER, " +
                         " jobID INTEGER, " +
